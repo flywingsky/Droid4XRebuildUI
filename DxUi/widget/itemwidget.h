@@ -7,6 +7,8 @@ namespace Ui {
 class ItemWidget;
 }
 class FramelessMove;
+class QListWidgetItem;
+
 class ItemWidget : public QWidget
 {
     Q_OBJECT
@@ -14,16 +16,21 @@ class ItemWidget : public QWidget
 public:
     explicit ItemWidget(QWidget *parent = 0);
     ~ItemWidget();
-    void SetNum(int num);
+    void SetText(QString t);
+    void SaveItem(QListWidgetItem* it);
+    QListWidgetItem* Item();
+
+signals:
+    void Pressed();
 
 protected:
-    //bool eventFilter(QObject *obj, QEvent *ev);
 
 private slots:
     void Move(QPoint pt);
 private:
     Ui::ItemWidget *ui;
     FramelessMove* _frame;
+    QListWidgetItem* _it;
 };
 
 #endif // ITEMWIDGET_H

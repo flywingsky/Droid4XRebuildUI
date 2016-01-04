@@ -9,6 +9,8 @@ class Pannel : public QStackedWidget
 public:
     explicit Pannel(QWidget *parent = 0);
 
+    void AddPage();
+
 signals:
 
 public slots:

@@ -6,16 +6,20 @@
 #include <QMouseEvent>
 #include "framelessmove.h"
 
+bool Title::_maxWindow = false;
+
 Title::Title(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Title),
-    _maxWindow(false)
+    _frame(new FramelessMove(this))
 {
     ui->setupUi(this);
 
     connect(ui->btnMin, SIGNAL(clicked()), this, SIGNAL(MinWnd()));
     connect(ui->btnMax, SIGNAL(clicked()), this, SLOT(ReverseMaxStatus()));
     connect(ui->btnClose, SIGNAL(clicked()), this, SIGNAL(CloseWnd()));
+
+    _frame->SetMonitor(this);
 }
 
 Title::~Title()
@@ -80,4 +84,13 @@ bool Title::DragTitle()
     return ret;
 }
 
+void Title::SetMoveTarget(QWidget *w)
+{
+    _frame->SetTarget(w);
+    installEventFilter(this);
+}
 
+void Title::SetText(const QString &text)
+{
+    ui->labelText->setText(text);
+}

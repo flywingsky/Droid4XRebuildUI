@@ -60,6 +60,7 @@ bool FramelessMove::eventFilter(QObject *obj, QEvent *ev)
             if(event->button() == Qt::LeftButton)
             {
                 _offsetPos = event->globalPos();
+                emit Pressed(_offsetPos);
                 lButtonPress = true;
             }
 
@@ -71,18 +72,20 @@ bool FramelessMove::eventFilter(QObject *obj, QEvent *ev)
             if(event->button() == Qt::LeftButton && lButtonPress)
             {
                 lButtonPress  = false;
+                emit Release(event->globalPos());
             }
 
             break;
         }
         case QEvent::MouseMove:
         {
+
             if(lButtonPress)
             {
                 QMouseEvent* event = (QMouseEvent*)ev;
 
                 QPoint newPos = event->globalPos() - _offsetPos;
-                emit MoveNewPos(newPos);
+                emit Offset(newPos);
 
                 if(_target)
                     _target->move(_target->pos() + newPos);
@@ -91,11 +94,6 @@ bool FramelessMove::eventFilter(QObject *obj, QEvent *ev)
 
 
             }
-            break;
-        }
-        case QEvent::Hide:
-        {
-            lButtonPress = false;
             break;
         }
         default:

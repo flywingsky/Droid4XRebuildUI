@@ -47,7 +47,9 @@ public:
 
 
 signals:
-    void MoveNewPos(QPoint pos);
+    void Pressed(QPoint pos);
+    void Release(QPoint pos);
+    void Offset(QPoint pos);
 
 
 protected:

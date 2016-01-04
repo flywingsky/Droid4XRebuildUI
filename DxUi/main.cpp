@@ -1,11 +1,14 @@
 #include "mainpanel.h"
 #include <QApplication>
 
+
+#include "dxui.h"
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainPanel w;
-    w.show();
+
+    DxUi* ui = new DxUi(&a);
 
     return a.exec();
 }

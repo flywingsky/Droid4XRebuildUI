@@ -2,18 +2,21 @@
 #include "ui_itemwidget.h"
 
 #include <QMouseEvent>
+#include <QDebug>
+#include <QPropertyAnimation>
 
 #include "framelessmove.h"
 ItemWidget::ItemWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ItemWidget),
-    _frame(new FramelessMove(this))
+    _frame(new FramelessMove(this)),
+    _it(NULL)
 {
     ui->setupUi(this);
     _frame->SetMonitor(this);
-    connect(_frame, SIGNAL(MoveNewPos(QPoint)), this, SLOT(Move(QPoint)));
-
-    //installEventFilter(this);
+    connect(_frame, SIGNAL(Offset(QPoint)), this, SLOT(Move(QPoint)));
+    connect(_frame, SIGNAL(Pressed(QPoint)), this, SLOT(raise()));
+    connect(_frame, SIGNAL(Pressed(QPoint)), this, SIGNAL(Pressed()));
 }
 
 ItemWidget::~ItemWidget()
@@ -21,70 +24,25 @@ ItemWidget::~ItemWidget()
     delete ui;
 }
 
-void ItemWidget::SetNum(int num)
+
+void ItemWidget::SetText(QString t)
 {
-    ui->label->setText(QString::number(num));
+    ui->label->setText(t);
 }
+
+void ItemWidget::SaveItem(QListWidgetItem *it)
+{
+    _it = it;
+}
+
+QListWidgetItem *ItemWidget::Item()
+{
+    return _it;
+}
+
 
 void ItemWidget::Move(QPoint pt)
 {
     pt.setX(0);
     move(pos() + pt);
 }
-
-
-
-//bool ItemWidget::eventFilter(QObject *obj, QEvent *ev)
-//{
-//    if (obj == this)
-//    {
-//        static bool lButtonPress = false;
-//        static QPoint dragPosition;
-
-
-//        switch(ev->type())
-//        {
-//        case QEvent::MouseButtonPress:
-//        {
-//            QMouseEvent* event = (QMouseEvent*)ev;
-//            if(event->button() == Qt::LeftButton)
-//            {
-//                QWidget* p = (QWidget*)this;
-
-//                dragPosition  = event->globalPos() - p->frameGeometry().topLeft();
-//                lButtonPress = true;
-//                raise();
-//            }
-
-//            break;
-//        }
-//        case QEvent::MouseButtonRelease:
-//        {
-//            QMouseEvent* event = (QMouseEvent*)ev;
-//            if(event->button() == Qt::LeftButton && lButtonPress)
-//                lButtonPress  = false;
-
-//            break;
-//        }
-//        case QEvent::MouseMove:
-//        {
-//            if(lButtonPress)
-//            {
-//                QMouseEvent* event = (QMouseEvent*)ev;
-//                QWidget* p = (QWidget*)this;
-//                QPoint tl = event->globalPos() - dragPosition;
-//                tl.setX(x());
-
-//                p->move(tl);
-//            }
-//            break;
-//        }
-
-//        default:
-//            break;
-
-//        }
-//    }
-
-//    return QWidget::eventFilter(obj,ev);
-//}

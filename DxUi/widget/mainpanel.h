@@ -7,8 +7,9 @@ namespace Ui {
 class MainPanel;
 }
 
-class FramelessMove;
 class QSplitter;
+class Page;
+class FramelessResize;
 
 class MainPanel : public QDialog
 {
@@ -18,10 +19,15 @@ public:
     explicit MainPanel(QWidget *parent = 0);
     ~MainPanel();
 
+    int AddPage(Page* p);
+
+protected slots:
+    void OffsetSize(QMargins g);
+
 private:
     Ui::MainPanel *ui;
-    FramelessMove* _frameMgr;
     QSplitter* _splitter;
+    FramelessResize* _fSize;
 };
 
 #endif // MAINPANEL_H

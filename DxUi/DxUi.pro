@@ -13,7 +13,8 @@ TEMPLATE = app
 
 INCLUDEPATH += ./widget \
     ./include \
-    ./control
+    ./control \
+    ./model
 
 
 SOURCES += main.cpp \
@@ -26,13 +27,17 @@ SOURCES += main.cpp \
     widget/screen.cpp \
     widget/itemwidget.cpp \
     widget/switchablelistwidget.cpp \
-    widget/pannel.cpp
+    widget/pannel.cpp \
+    widget/page.cpp \
+    model/pagedata.cpp \
+    include/framelessresize.cpp
 
 FORMS += \
     widget/mainpanel.ui \
     widget/title.ui \
     widget/screen.ui \
-    widget/itemwidget.ui
+    widget/itemwidget.ui \
+    widget/page.ui
 
 HEADERS += \
     widget/mainpanel.h \
@@ -44,5 +49,9 @@ HEADERS += \
     widget/screen.h \
     widget/itemwidget.h \
     widget/switchablelistwidget.h \
-    widget/pannel.h
+    widget/pannel.h \
+    widget/page.h \
+    model/pagedata.h \
+    model/defprivate.h \
+    include/framelessresize.h
 

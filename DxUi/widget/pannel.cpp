@@ -5,3 +5,8 @@ Pannel::Pannel(QWidget *parent) : QStackedWidget(parent)
 
 }
 
+void Pannel::AddPage()
+{
+
+}
+

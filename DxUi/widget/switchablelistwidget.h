@@ -6,6 +6,7 @@
 class QMouseEvent;
 class QEvent;
 class QListWidgetItem;
+class PageData;
 
 class SwitchableListWidget : public QListWidget
 {
@@ -13,10 +14,10 @@ class SwitchableListWidget : public QListWidget
 public:
     explicit SwitchableListWidget(QWidget *parent = 0);
 
-    void AddItem(int num);
-    void AddEmptyItem();
+    void AppendItem(const PageData& d);
 
 signals:
+    void ActiveIndex(int i);
 
 public slots:
 
@@ -25,8 +26,13 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
 
+
 private:
-    void SwapItem(int src, int des);
+    void JumpQueue(int src, int des, bool front = true);
+
+private slots:
+    void Active();
+
 
 private:
     QListWidgetItem* _dragItem;

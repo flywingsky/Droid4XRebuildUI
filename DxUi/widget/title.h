@@ -7,6 +7,10 @@ namespace Ui {
 class Title;
 }
 
+class FramelessMove;
+
+
+
 class Title : public QWidget
 {
     Q_OBJECT
@@ -18,6 +22,10 @@ public:
     ~Title();
 
     bool MaxWindow();
+
+    void SetMoveTarget(QWidget* w);
+
+    void SetText(const QString& text);
 
 
 
@@ -44,7 +52,8 @@ private slots:
 
 private:
     Ui::Title *ui;
-    bool _maxWindow;
+    static bool _maxWindow;
+    FramelessMove* _frame;
 };
 
 #endif // TITLE_H

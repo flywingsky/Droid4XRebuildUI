@@ -5,7 +5,10 @@
 
 
 #include "itemwidget.h"
+#include <QLineEdit>
 #include <QListWidgetItem>
+#include "pagedata.h"
+#include "defprivate.h"
 
 SwitchableListWidget::SwitchableListWidget(QWidget *parent) :
     QListWidget(parent),
@@ -13,32 +16,30 @@ SwitchableListWidget::SwitchableListWidget(QWidget *parent) :
 {
 }
 
-void SwitchableListWidget::AddItem(int num)
+void SwitchableListWidget::AppendItem(const PageData &d)
 {
     QListWidgetItem* it = new QListWidgetItem(this);
     ItemWidget* wnd = new ItemWidget(this);
+
+    wnd->SaveItem(it);
+    wnd->SetText(d.title);
+
     it->setSizeHint(wnd->size());
-    wnd->SetNum(num);
+    it->setData(PAGE_DATA, QVariant::fromValue(d));
+    it->setData(ITEM_WIDGET, QVariant::fromValue(wnd));
 
-    setItemWidget(it, wnd);
-
-}
-
-void SwitchableListWidget::AddEmptyItem()
-{
-    QListWidgetItem* it = new QListWidgetItem(this);
-    ItemWidget wnd(this);
-    it->setSizeHint(wnd.size());
+    connect(wnd, SIGNAL(Pressed()), this, SLOT(Active()));
 
 
     addItem(it);
+    setItemWidget(it, wnd);
 }
 
 
 void SwitchableListWidget::mousePressEvent(QMouseEvent * event)
 {
     _dragItem = itemAt(event->pos());
-
+    QListWidget::mousePressEvent(event);
 }
 
 void SwitchableListWidget::mouseReleaseEvent(QMouseEvent * event)
@@ -50,6 +51,7 @@ void SwitchableListWidget::mouseReleaseEvent(QMouseEvent * event)
             wnd->setGeometry(visualItemRect(_dragItem));
     }
     _dragItem = NULL;
+    QListWidget::mouseReleaseEvent(event);
 }
 
 void SwitchableListWidget::mouseMoveEvent(QMouseEvent * event)
@@ -62,54 +64,44 @@ void SwitchableListWidget::mouseMoveEvent(QMouseEvent * event)
             if(it != _dragItem)
             {
                 QRect rc = itemWidget(_dragItem)->geometry();
-                SwapItem(row(_dragItem), row(it));
+                JumpQueue(row(_dragItem), row(it), (row(_dragItem) > row(it)));
                 _dragItem = itemAt(event->pos());
                 itemWidget(_dragItem)->setGeometry(rc);
             }
         }
-        else
-        {
-
-        }
     }
+
+    QListWidget::mouseMoveEvent(event);
 
 }
 
 
 
-void SwitchableListWidget::SwapItem(int src, int des)
+
+void SwitchableListWidget::JumpQueue(int src, int des, bool front)
 {
-    if( src < 0 || src >= count() ||
-        des < 0 || des >= count() ||
-        des == src)
+    Q_ASSERT(des >=0 && des < count());
+    Q_ASSERT(src >=0 && src < count());
+
+    if(src == des)
         return;
 
-    int nFront = qMin(src,des);
-    int nLatter = qMax(src,des);
+    // 放入站位item
+    QListWidgetItem* it = item(src);
+    QListWidgetItem* itNew = new QListWidgetItem(*it);
+    insertItem(des + (front ? 0 : 1), itNew);
+    ItemWidget* wnd = itNew->data(ITEM_WIDGET).value<ItemWidget*>();
+    wnd->SaveItem(itNew);
+    setItemWidget(itNew, wnd);
 
-    // 成功交换 界面修改
-    insertItem(nLatter,"");        // 先插入后面的Item 前面的Item位置不受影响
-    insertItem(nFront,"");
+    delete takeItem(row(it));
 
-    QListWidgetItem*  pFrontItem= item(nFront);
-    QListWidgetItem*  pLatterItem= item(nLatter + 1);    // 因为前面多插入了一个nFront 所以 +1
+}
 
 
-    pFrontItem->setSizeHint(visualItemRect(item(nFront + 1)).size());    // 设定大小
-    pLatterItem->setSizeHint(visualItemRect(item(nLatter + 2)).size());    // 设定大小
-
-    // 获得之前设定的窗口
-    QWidget* pFrontCell = itemWidget(item(nFront + 1));
-    QWidget* pLatterCell = itemWidget(item(nLatter + 2));
-
-    if(pFrontCell)
-        setItemWidget(pLatterItem, pFrontCell);
-
-    if(pLatterCell)
-        setItemWidget(pFrontItem, pLatterCell);
-
-    delete takeItem(nLatter+2);
-    delete takeItem(nFront+1);
-
+void SwitchableListWidget::Active()
+{
+    qDebug() << ((ItemWidget*)sender())->Item()->data(PAGE_DATA).value<PageData>().index;
+    emit ActiveIndex(((ItemWidget*)sender())->Item()->data(PAGE_DATA).value<PageData>().index);
 }
 
