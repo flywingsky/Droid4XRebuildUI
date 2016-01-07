@@ -3,15 +3,22 @@
 
 #include <QObject>
 
+class QListWidgetItem;
+class MainPanel;
+
 class DxUi : public QObject
 {
     Q_OBJECT
 public:
     explicit DxUi(QObject *parent = 0);
 
+    MainPanel* CreatePanel();
+
 signals:
 
 public slots:
+    void DragOutCreate(QListWidgetItem* it);
+
 
 };
 

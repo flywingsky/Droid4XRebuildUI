@@ -10,6 +10,8 @@
 #include "page.h"
 #include "title.h"
 #include "framelessresize.h"
+#include "snapshotpage.h"
+#include "pagedata.h"
 
 
 MainPanel::MainPanel(QWidget *parent) :
@@ -18,6 +20,8 @@ MainPanel::MainPanel(QWidget *parent) :
     _fSize(new FramelessResize(this))
 {
     ui->setupUi(this);
+
+    connect(ui->listWidget, SIGNAL(DragOut(QListWidgetItem*)), this, SIGNAL(DragOut(QListWidgetItem*)));
 
     FramelessMove::SetFrameLess(true,this);
 
@@ -28,13 +32,14 @@ MainPanel::MainPanel(QWidget *parent) :
 
     _splitter = new QSplitter(this);
     _splitter->addWidget(ui->listWidget);
-    _splitter->addWidget(ui->pannel);
+    _splitter->addWidget(ui->panel);
+    _splitter->setStretchFactor(1,1);
     _splitter->setHandleWidth(10);
     _splitter->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     _splitter->show();
 
 
-    connect(ui->listWidget, SIGNAL(ActiveIndex(int)), ui->pannel, SLOT(setCurrentIndex(int)));
+    connect(ui->listWidget, SIGNAL(ActiveIndex(int)), ui->panel, SLOT(setCurrentIndex(int)));
 
     setLayout(new QGridLayout(this));
     layout()->addWidget(_splitter);
@@ -47,17 +52,17 @@ MainPanel::~MainPanel()
     delete ui;
 }
 
-int MainPanel::AddPage(Page *p)
+int MainPanel::AddPage(PageData& d)
 {
+    Page* p = new Page(this);
     connect(p->TitleWidget(), SIGNAL(MinWnd()), this, SLOT(showMinimized()));
     connect(p->TitleWidget(), SIGNAL(MaxWnd()), this, SLOT(showMaximized()));
     connect(p->TitleWidget(), SIGNAL(NormalWnd()), this, SLOT(showNormal()));
     connect(p->TitleWidget(), SIGNAL(CloseWnd()), this, SLOT(close()));
     p->TitleWidget()->SetMoveTarget(this);
 
-    PageData d;
-    d.index = ui->pannel->addWidget(p);
-    d.title = QString::number(d.index);
+    d.index = ui->panel->addWidget(p);
+    d.page = p;
 
     p->TitleWidget()->SetText(d.title);
     ui->listWidget->AppendItem(d);
@@ -65,9 +70,9 @@ int MainPanel::AddPage(Page *p)
     return d.index;
 }
 
+
+
 void MainPanel::OffsetSize(QMargins g)
 {
     setGeometry(geometry() + g);
 }
-
-

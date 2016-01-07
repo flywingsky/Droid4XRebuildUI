@@ -30,10 +30,33 @@ void SwitchableListWidget::AppendItem(const PageData &d)
 
     connect(wnd, SIGNAL(Pressed()), this, SLOT(Active()));
 
-
     addItem(it);
     setItemWidget(it, wnd);
 }
+
+PageData SwitchableListWidget::GetPageData(QListWidgetItem* it)
+{
+    return it->data(PAGE_DATA).value<PageData>();
+}
+
+ItemWidget *SwitchableListWidget::GetItemWidget(QListWidgetItem *it)
+{
+    return it->data(ITEM_WIDGET).value<ItemWidget*>();
+}
+
+QListWidgetItem *SwitchableListWidget::itemAtEx(const QPoint &p) const
+{
+    QListWidgetItem * it = itemAt(p);
+    if(!it && count() > 0 && rect().contains(p))
+    {
+        if(p.y() > visualItemRect(item(count() - 1)).y())
+            it = item(count() - 1);
+        else if(p.y() < visualItemRect(item(0)).y())
+            it = item(0);
+    }
+    return it;
+}
+
 
 
 void SwitchableListWidget::mousePressEvent(QMouseEvent * event)
@@ -46,11 +69,19 @@ void SwitchableListWidget::mouseReleaseEvent(QMouseEvent * event)
 {
     if(_dragItem)
     {
-        QWidget* wnd = itemWidget(_dragItem);
-        if(wnd)
+        ItemWidget* wnd = GetItemWidget(_dragItem);
+        if(wnd->IsSnapHidden())
             wnd->setGeometry(visualItemRect(_dragItem));
+        else
+        {
+            emit DragOut(_dragItem);
+            ShowSnap(false);
+            takeItem(row(_dragItem));
+            qDebug() << count();
+        }
     }
     _dragItem = NULL;
+    qDebug() << "mouseReleaseEvent";
     QListWidget::mouseReleaseEvent(event);
 }
 
@@ -58,17 +89,33 @@ void SwitchableListWidget::mouseMoveEvent(QMouseEvent * event)
 {
     if(_dragItem)
     {
-        QListWidgetItem* it = itemAt(event->pos());
-        if(it)
+        if(!rect().contains(event->pos()))
         {
-            if(it != _dragItem)
-            {
-                QRect rc = itemWidget(_dragItem)->geometry();
-                JumpQueue(row(_dragItem), row(it), (row(_dragItem) > row(it)));
-                _dragItem = itemAt(event->pos());
-                itemWidget(_dragItem)->setGeometry(rc);
-            }
+            //qDebug() << "out";
+            ShowSnap(true);
         }
+        else
+        {
+            //qDebug() << "in";
+            ShowSnap(false);
+
+            QListWidgetItem* it = itemAtEx(event->pos());
+
+            if(it)
+            {
+                if(it != _dragItem)
+                {
+                    QRect rc = itemWidget(_dragItem)->geometry();
+                    JumpQueue(row(_dragItem), row(it), (row(_dragItem) > row(it)));
+                    _dragItem = itemAtEx(event->pos());
+                    itemWidget(_dragItem)->setGeometry(rc);
+                }
+            }
+            ItemWidget* wnd = GetItemWidget(_dragItem);
+            wnd->move(0,event->pos().y() - wnd->height() / 2);
+
+        }
+
     }
 
     QListWidget::mouseMoveEvent(event);
@@ -99,9 +146,36 @@ void SwitchableListWidget::JumpQueue(int src, int des, bool front)
 }
 
 
+void SwitchableListWidget::ShowSnap(bool show)
+{
+    Q_ASSERT(_dragItem);
+    ItemWidget* wnd = GetItemWidget(_dragItem);
+
+    if(show)
+    {
+        if(wnd->IsSnapHidden())
+        {
+            PageData pdata = GetPageData(_dragItem);
+            wnd->ShowSnap((QWidget*)pdata.page);
+            wnd->hide();
+            _dragItem->setSizeHint(QSize(0,0));
+        }
+    }
+    else
+    {
+        if(!wnd->IsSnapHidden())
+        {
+            wnd->ShowSnap(NULL);
+            _dragItem->setSizeHint(wnd->size());
+            wnd->show();
+            wnd->raise();
+        }
+    }
+}
+
+
 void SwitchableListWidget::Active()
 {
-    qDebug() << ((ItemWidget*)sender())->Item()->data(PAGE_DATA).value<PageData>().index;
     emit ActiveIndex(((ItemWidget*)sender())->Item()->data(PAGE_DATA).value<PageData>().index);
 }
 

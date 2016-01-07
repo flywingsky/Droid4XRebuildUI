@@ -8,8 +8,10 @@ class MainPanel;
 }
 
 class QSplitter;
-class Page;
+class PageData;
 class FramelessResize;
+class QListWidgetItem;
+class SnapshotPage;
 
 class MainPanel : public QDialog
 {
@@ -19,7 +21,10 @@ public:
     explicit MainPanel(QWidget *parent = 0);
     ~MainPanel();
 
-    int AddPage(Page* p);
+    int AddPage(PageData &d);
+
+signals:
+    void DragOut(QListWidgetItem* it);
 
 protected slots:
     void OffsetSize(QMargins g);

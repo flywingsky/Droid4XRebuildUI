@@ -2,6 +2,7 @@
 #define PAGEDATA_H
 
 #include <QObject>
+class Page;
 
 class PageData : public QObject
 {
@@ -9,6 +10,7 @@ class PageData : public QObject
 public:
     int index;
     QString title;
+    Page* page;
 
 public:
     explicit PageData(QObject *parent = 0);

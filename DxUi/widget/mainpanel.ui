@@ -26,7 +26,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="Pannel" name="pannel">
+  <widget class="Panel" name="panel">
    <property name="geometry">
     <rect>
      <x>300</x>
@@ -34,19 +34,6 @@
      <width>551</width>
      <height>361</height>
     </rect>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>530</y>
-     <width>161</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>PushButton</string>
    </property>
   </widget>
  </widget>
@@ -58,9 +45,9 @@
    <header>switchablelistwidget.h</header>
   </customwidget>
   <customwidget>
-   <class>Pannel</class>
+   <class>Panel</class>
    <extends>QStackedWidget</extends>
-   <header>pannel.h</header>
+   <header>panel.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

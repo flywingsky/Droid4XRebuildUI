@@ -27,17 +27,23 @@ SOURCES += main.cpp \
     widget/screen.cpp \
     widget/itemwidget.cpp \
     widget/switchablelistwidget.cpp \
-    widget/pannel.cpp \
+    widget/panel.cpp \
     widget/page.cpp \
     model/pagedata.cpp \
-    include/framelessresize.cpp
+    include/framelessresize.cpp \
+    widget/toolbar.cpp \
+    widget/bubblegum.cpp \
+    widget/snapshotpage.cpp
 
 FORMS += \
     widget/mainpanel.ui \
     widget/title.ui \
     widget/screen.ui \
     widget/itemwidget.ui \
-    widget/page.ui
+    widget/page.ui \
+    widget/toolbar.ui \
+    widget/bubblegum.ui \
+    widget/snapshotpage.ui
 
 HEADERS += \
     widget/mainpanel.h \
@@ -49,9 +55,12 @@ HEADERS += \
     widget/screen.h \
     widget/itemwidget.h \
     widget/switchablelistwidget.h \
-    widget/pannel.h \
+    widget/panel.h \
     widget/page.h \
     model/pagedata.h \
     model/defprivate.h \
-    include/framelessresize.h
+    include/framelessresize.h \
+    widget/toolbar.h \
+    widget/bubblegum.h \
+    widget/snapshotpage.h
 
