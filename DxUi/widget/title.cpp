@@ -5,13 +5,14 @@
 #include <QDebug>
 #include <QMouseEvent>
 #include "framelessmove.h"
+#include "mainpanel.h"
 
-bool Title::_maxWindow = false;
 
 Title::Title(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Title),
-    _frame(new FramelessMove(this))
+    _frame(new FramelessMove(this)),
+    _panel(NULL)
 {
     ui->setupUi(this);
 
@@ -29,16 +30,15 @@ Title::~Title()
 
 bool Title::MaxWindow()
 {
-    return _maxWindow;
+    return _panel->isMaximized();
 }
 
 void Title::setMaxWindow(bool max)
 {
-    if(max != _maxWindow)
+    if(max != MaxWindow())
     {
-        _maxWindow = max;
-        emit MaxWindowChanged(max);
-        if(MaxWindow())
+        _panel->setWindowState(max ? Qt::WindowMaximized : Qt::WindowNoState);
+        if(max)
             emit MaxWnd();
         else
             emit NormalWnd();
@@ -93,4 +93,9 @@ void Title::SetMoveTarget(QWidget *w)
 void Title::SetText(const QString &text)
 {
     ui->labelText->setText(text);
+}
+
+void Title::SetMainPanel(MainPanel *p)
+{
+    _panel = p;
 }

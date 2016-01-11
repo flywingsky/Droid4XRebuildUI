@@ -8,6 +8,8 @@ class Title;
 }
 
 class FramelessMove;
+class MainPanel;
+
 
 
 
@@ -15,8 +17,6 @@ class Title : public QWidget
 {
     Q_OBJECT
 
-public:
-    Q_PROPERTY(bool MaxWindow READ MaxWindow WRITE setMaxWindow NOTIFY MaxWindowChanged)
 public:
     explicit Title(QWidget *parent = 0);
     ~Title();
@@ -27,6 +27,8 @@ public:
 
     void SetText(const QString& text);
 
+    void SetMainPanel(MainPanel * p);
+
 
 
 signals:
@@ -35,7 +37,6 @@ signals:
     void NormalWnd();
     void CloseWnd();
 
-    void MaxWindowChanged(bool max);
 
 public slots:
     void setMaxWindow(bool max);
@@ -45,15 +46,14 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent * event);
     bool eventFilter(QObject *obj, QEvent *ev);
 
-
 private slots:
     void ReverseMaxStatus();
     bool DragTitle();
 
 private:
     Ui::Title *ui;
-    static bool _maxWindow;
     FramelessMove* _frame;
+    MainPanel * _panel;
 };
 
 #endif // TITLE_H

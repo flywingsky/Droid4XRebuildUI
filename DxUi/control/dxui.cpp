@@ -13,10 +13,11 @@ DxUi::DxUi(QObject *parent) :
     QObject(parent)
 {
     MainPanel* p = CreatePanel();
+    QString s;
     for(int n=0; n<10; ++n)
     {
         PageData d;
-        d.title = QString::number(n+100) + "__page";
+        d.title = QString::number(n);
         p->AddPage(d);
     }
     p->show();

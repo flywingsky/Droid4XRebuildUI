@@ -12,12 +12,14 @@
 #include "framelessresize.h"
 #include "snapshotpage.h"
 #include "pagedata.h"
+#include "screen.h"
 
 
 MainPanel::MainPanel(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::MainPanel),
-    _fSize(new FramelessResize(this))
+    _fSize(new FramelessResize(this)),
+    _fixRatio(50,25)
 {
     ui->setupUi(this);
 
@@ -55,6 +57,7 @@ MainPanel::~MainPanel()
 int MainPanel::AddPage(PageData& d)
 {
     Page* p = new Page(this);
+    p->TitleWidget()->SetMainPanel(this);
     connect(p->TitleWidget(), SIGNAL(MinWnd()), this, SLOT(showMinimized()));
     connect(p->TitleWidget(), SIGNAL(MaxWnd()), this, SLOT(showMaximized()));
     connect(p->TitleWidget(), SIGNAL(NormalWnd()), this, SLOT(showNormal()));
@@ -67,12 +70,53 @@ int MainPanel::AddPage(PageData& d)
     p->TitleWidget()->SetText(d.title);
     ui->listWidget->AppendItem(d);
 
+
+
+
+
+
+
+
     return d.index;
 }
 
+QMargins MainPanel::FixRatioTransform(const QMargins &g)
+{
+    Screen* s = ui->panel->CurrentPage()->ScreenWidget();
+
+    QSize intend = (s->geometry() + g).size();
+
+    int sum = g.left()+g.top()+g.right()+g.bottom();
+    QSize except = _fixRatio.scaled(intend, (sum > 0 ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio)) - s->size();
+
+    QMargins ret;
+
+    qreal h = g.left() + g.right();
+    qreal v = g.top() + g.bottom();
+
+    if(h)
+    {
+        ret.setLeft(g.left() / h * except.width());
+        ret.setRight(g.right() / h * except.width());
+    }
+    else
+        ret.setRight(except.width());
+
+    if(v)
+    {
+        ret.setTop(g.top() / v * except.height());
+        ret.setBottom(g.bottom() / v * except.height());
+    }
+    else
+        ret.setBottom(except.height());
+
+
+    return ret;
+
+}
 
 
 void MainPanel::OffsetSize(QMargins g)
 {
-    setGeometry(geometry() + g);
+    setGeometry(geometry() + FixRatioTransform(g));
 }

@@ -15,6 +15,9 @@ public:
     explicit Screen(QWidget *parent = 0);
     ~Screen();
 
+protected:
+    virtual void	resizeEvent(QResizeEvent * event);
+
 private:
     Ui::Screen *ui;
 };

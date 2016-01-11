@@ -16,23 +16,27 @@ class SnapshotPage;
 class MainPanel : public QDialog
 {
     Q_OBJECT
-
 public:
     explicit MainPanel(QWidget *parent = 0);
     ~MainPanel();
 
     int AddPage(PageData &d);
 
+
+
 signals:
     void DragOut(QListWidgetItem* it);
 
-protected slots:
-    void OffsetSize(QMargins g);
+private:
+    QMargins FixRatioTransform(const QMargins& g);
 
+private slots:
+    void OffsetSize(QMargins g);
 private:
     Ui::MainPanel *ui;
     QSplitter* _splitter;
     FramelessResize* _fSize;
+    QSize _fixRatio;
 };
 
 #endif // MAINPANEL_H
