@@ -30,12 +30,17 @@ signals:
     void DragOut(QListWidgetItem* it);
 
 public slots:
-    void Text();
 
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
+
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dragMoveEvent(QDragMoveEvent *event);
+    void dragLeaveEvent(QDragLeaveEvent *event);
+    void dropEvent(QDropEvent *event);
+    void startDrag(Qt::DropActions supportedActions);
 
 
 private:
@@ -44,6 +49,9 @@ private:
 
     void InitAnimation();
     void StartAnimation();
+
+    QMimeData* CreateMimeData(ItemWidget* wnd) const;
+    ItemWidget* GetData(const QMimeData* d) const;
 
 private slots:
     void Active();

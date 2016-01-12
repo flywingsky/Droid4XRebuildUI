@@ -13,13 +13,16 @@
 #include <QPropertyAnimation>
 #include "pagedata.h"
 #include "defprivate.h"
+#include <QApplication>
 
 SwitchableListWidget::SwitchableListWidget(QWidget *parent) :
     QListWidget(parent),
     _dragItem(NULL),
     _itemAnimation(NULL)
 {
-    connect(this, SIGNAL(indexesMoved(QModelIndexList)), this, SLOT(Text()));
+    setDragEnabled(true);
+    setSpacing(1);
+    setAcceptDrops(true);
 }
 
 void SwitchableListWidget::AppendItem(const PageData &d)
@@ -63,16 +66,10 @@ QListWidgetItem *SwitchableListWidget::itemAtEx(const QPoint &p) const
     return it;
 }
 
-void SwitchableListWidget::Text()
-{
-    qDebug() << "sadfasdfda";
-}
-
-
 
 void SwitchableListWidget::mousePressEvent(QMouseEvent * event)
 {
-    _dragItem = itemAt(event->pos());
+    //_dragItem = itemAt(event->pos());
     QListWidget::mousePressEvent(event);
 }
 
@@ -135,6 +132,82 @@ void SwitchableListWidget::mouseMoveEvent(QMouseEvent * event)
 
     QListWidget::mouseMoveEvent(event);
 
+}
+
+void SwitchableListWidget::dragEnterEvent(QDragEnterEvent *event)
+{
+    qDebug() << "dragEnterEvent";
+    if (event->mimeData()->hasFormat(DRAG_FORMAT))
+        event->accept();
+    else
+        event->ignore();
+}
+
+void SwitchableListWidget::dragMoveEvent(QDragMoveEvent *event)
+{
+    if (event->mimeData()->hasFormat(DRAG_FORMAT))
+    {
+        ItemWidget* wnd = GetData(event->mimeData());
+        QListWidgetItem* it = itemAtEx(event->pos());
+        QListWidgetItem* dragIt = wnd->Item();
+
+        if(it && it != dragIt)
+        {
+            QRect rc = itemWidget(dragIt)->geometry();
+            JumpQueue(row(dragIt), row(it), (row(dragIt) > row(it)));
+            dragIt = itemAtEx(event->pos());
+            itemWidget(dragIt)->setGeometry(rc);
+        }
+        wnd->move(0,event->pos().y() - wnd->height() / 2);
+
+
+
+
+        event->setDropAction(Qt::MoveAction);
+        event->accept();
+    }
+    else
+        event->ignore();
+
+}
+
+void SwitchableListWidget::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    qDebug() << "dragLeaveEvent";
+
+    event->accept();
+}
+
+void SwitchableListWidget::dropEvent(QDropEvent *event)
+{
+
+    if (event->mimeData()->hasFormat(DRAG_FORMAT))
+    {
+        ItemWidget* wnd = GetData(event->mimeData());
+        wnd->setGeometry(visualItemRect(wnd->Item()));
+
+
+        event->setDropAction(Qt::MoveAction);
+        event->accept();
+    } else {
+        event->ignore();
+    }
+
+    qDebug() << "dropEvent";
+}
+
+void SwitchableListWidget::startDrag(Qt::DropActions supportedActions)
+{
+    qDebug() << "startDrag";
+
+    ItemWidget* wnd = GetItemWidget(currentItem());
+    QMimeData *mimeData = CreateMimeData(wnd);
+
+    QDrag *drag = new QDrag(this);
+    drag->setMimeData(mimeData);
+    drag->setHotSpot(QPoint());
+
+    drag->exec(Qt::MoveAction);
 }
 
 
@@ -222,6 +295,28 @@ void SwitchableListWidget::StartAnimation()
     }
 
     _itemAnimation->start();
+}
+
+QMimeData *SwitchableListWidget::CreateMimeData(ItemWidget *wnd) const
+{
+    QByteArray dragData;
+    QDataStream dataStream(&dragData, QIODevice::WriteOnly);
+    dataStream << (int)wnd;
+
+    QMimeData *mimeData = new QMimeData;
+    mimeData->setData(DRAG_FORMAT, dragData);
+    return mimeData;
+}
+
+ItemWidget *SwitchableListWidget::GetData(const QMimeData *d) const
+{
+    int tempWnd;
+
+    QByteArray arr = d->data(DRAG_FORMAT);
+    QDataStream dataStream(&arr, QIODevice::ReadOnly);
+    dataStream >> tempWnd;
+
+    return (ItemWidget*)tempWnd;
 }
 
 

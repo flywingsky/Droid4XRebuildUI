@@ -35,6 +35,11 @@ void ItemWidget::SetText(QString t)
     ui->label->setText(t);
 }
 
+QString ItemWidget::Text() const
+{
+    return ui->label->text();
+}
+
 void ItemWidget::SaveItem(QListWidgetItem *it)
 {
     _it = it;

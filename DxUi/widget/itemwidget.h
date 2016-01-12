@@ -18,6 +18,7 @@ public:
     explicit ItemWidget(QWidget *parent = 0);
     ~ItemWidget();
     void SetText(QString t);
+    QString Text() const;
     void SaveItem(QListWidgetItem* it);
     void ShowSnap(QWidget *snapWidget);
     bool IsSnapHidden();
