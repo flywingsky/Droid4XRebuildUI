@@ -8,6 +8,7 @@ class QEvent;
 class QListWidgetItem;
 class PageData;
 class ItemWidget;
+class QParallelAnimationGroup;
 
 class SwitchableListWidget : public QListWidget
 {
@@ -29,6 +30,7 @@ signals:
     void DragOut(QListWidgetItem* it);
 
 public slots:
+    void Text();
 
 protected:
     void mousePressEvent(QMouseEvent *event);
@@ -40,12 +42,16 @@ private:
     void JumpQueue(int src, int des, bool front = true);
     void ShowSnap(bool show);
 
+    void InitAnimation();
+    void StartAnimation();
+
 private slots:
     void Active();
 
 
 private:
     QListWidgetItem* _dragItem;
+    QParallelAnimationGroup* _itemAnimation;
 
 };
 

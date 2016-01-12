@@ -5,15 +5,21 @@
 
 
 #include "itemwidget.h"
+#include <QDrag>
 #include <QLineEdit>
 #include <QListWidgetItem>
+#include <QMimeData>
+#include <QParallelAnimationGroup>
+#include <QPropertyAnimation>
 #include "pagedata.h"
 #include "defprivate.h"
 
 SwitchableListWidget::SwitchableListWidget(QWidget *parent) :
     QListWidget(parent),
-    _dragItem(NULL)
+    _dragItem(NULL),
+    _itemAnimation(NULL)
 {
+    connect(this, SIGNAL(indexesMoved(QModelIndexList)), this, SLOT(Text()));
 }
 
 void SwitchableListWidget::AppendItem(const PageData &d)
@@ -57,6 +63,11 @@ QListWidgetItem *SwitchableListWidget::itemAtEx(const QPoint &p) const
     return it;
 }
 
+void SwitchableListWidget::Text()
+{
+    qDebug() << "sadfasdfda";
+}
+
 
 
 void SwitchableListWidget::mousePressEvent(QMouseEvent * event)
@@ -91,7 +102,6 @@ void SwitchableListWidget::mouseMoveEvent(QMouseEvent * event)
     {
         if(!rect().contains(event->pos()))
         {
-            //qDebug() << "out";
             ShowSnap(true);
         }
         else
@@ -105,10 +115,15 @@ void SwitchableListWidget::mouseMoveEvent(QMouseEvent * event)
             {
                 if(it != _dragItem)
                 {
+                    InitAnimation();
+
                     QRect rc = itemWidget(_dragItem)->geometry();
                     JumpQueue(row(_dragItem), row(it), (row(_dragItem) > row(it)));
                     _dragItem = itemAtEx(event->pos());
                     itemWidget(_dragItem)->setGeometry(rc);
+
+                    StartAnimation();
+
                 }
             }
             ItemWidget* wnd = GetItemWidget(_dragItem);
@@ -171,6 +186,42 @@ void SwitchableListWidget::ShowSnap(bool show)
             wnd->raise();
         }
     }
+}
+
+void SwitchableListWidget::InitAnimation()
+{
+    if(!_itemAnimation)
+        _itemAnimation = new QParallelAnimationGroup;
+
+    _itemAnimation->clear();
+
+    for (int i = 0; i < count(); ++i)
+    {
+        QListWidgetItem* it = item(i);
+        if(it == _dragItem)
+            continue;
+
+        QPropertyAnimation *anim = new QPropertyAnimation(GetItemWidget(it), "geometry", _itemAnimation);
+
+        anim->setStartValue(visualItemRect(it));
+        anim->setDuration(500 + i * 25);
+        anim->setEasingCurve(QEasingCurve::Linear);
+
+        _itemAnimation->addAnimation(anim);
+    }
+}
+
+void SwitchableListWidget::StartAnimation()
+{
+
+    for(int n=0; n<_itemAnimation->animationCount(); ++n)
+    {
+        QPropertyAnimation* a = (QPropertyAnimation*)_itemAnimation->animationAt(n);
+        ItemWidget* w = (ItemWidget*)a->targetObject();
+        a->setEndValue(visualItemRect(((ItemWidget*)a->targetObject())->Item()));
+    }
+
+    _itemAnimation->start();
 }
 
 
