@@ -5,6 +5,8 @@
 
 
 class Page;
+class MainPanel;
+class PageData;
 
 class Panel : public QStackedWidget
 {
@@ -12,13 +14,14 @@ class Panel : public QStackedWidget
 public:
     explicit Panel(QWidget *parent = 0);
 
-    void AddPage();
+    void AddPage(PageData *d);
 
     Page* CurrentPage();
 
 signals:
 
 public slots:
+
 };
 
 #endif // PANEL_H

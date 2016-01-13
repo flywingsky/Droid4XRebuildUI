@@ -20,7 +20,7 @@ public:
     explicit MainPanel(QWidget *parent = 0);
     ~MainPanel();
 
-    int AddPage(PageData &d);
+    int AddPage(PageData *d);
 
 
 

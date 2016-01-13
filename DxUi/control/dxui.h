@@ -5,6 +5,7 @@
 
 class QListWidgetItem;
 class MainPanel;
+class PageData;
 
 class DxUi : public QObject
 {
@@ -19,7 +20,8 @@ signals:
 public slots:
     void DragOutCreate(QListWidgetItem* it);
 
-
+private:
+    QList<PageData*> _datas;
 };
 
 #endif // DXUI_H

@@ -12,7 +12,6 @@ ItemWidget::ItemWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ItemWidget),
     _frame(new FramelessMove(this)),
-    _it(NULL),
     _snappage(NULL)
 {
     ui->setupUi(this);
@@ -40,10 +39,7 @@ QString ItemWidget::Text() const
     return ui->label->text();
 }
 
-void ItemWidget::SaveItem(QListWidgetItem *it)
-{
-    _it = it;
-}
+
 
 void ItemWidget::ShowSnap(QWidget* snapWidget)
 {
@@ -77,10 +73,6 @@ bool ItemWidget::IsSnapHidden()
     return (_snappage ? _snappage->isHidden() : true);
 }
 
-QListWidgetItem *ItemWidget::Item()
-{
-    return _it;
-}
 
 
 void ItemWidget::Move(QPoint pt)

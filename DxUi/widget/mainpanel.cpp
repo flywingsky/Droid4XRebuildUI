@@ -19,7 +19,7 @@ MainPanel::MainPanel(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::MainPanel),
     _fSize(new FramelessResize(this)),
-    _fixRatio(50,25)
+    _fixRatio(50,50)
 {
     ui->setupUi(this);
 
@@ -41,7 +41,7 @@ MainPanel::MainPanel(QWidget *parent) :
     _splitter->show();
 
 
-    connect(ui->listWidget, SIGNAL(ActiveIndex(int)), ui->panel, SLOT(setCurrentIndex(int)));
+    connect(ui->listWidget, SIGNAL(ActivePage(QWidget*)), ui->panel, SLOT(setCurrentWidget(QWidget*)));
 
     setLayout(new QGridLayout(this));
     layout()->addWidget(_splitter);
@@ -54,34 +54,18 @@ MainPanel::~MainPanel()
     delete ui;
 }
 
-int MainPanel::AddPage(PageData& d)
+int MainPanel::AddPage(PageData* d)
 {
-    Page* p = new Page(this);
-    p->TitleWidget()->SetMainPanel(this);
-    connect(p->TitleWidget(), SIGNAL(MinWnd()), this, SLOT(showMinimized()));
-    connect(p->TitleWidget(), SIGNAL(MaxWnd()), this, SLOT(showMaximized()));
-    connect(p->TitleWidget(), SIGNAL(NormalWnd()), this, SLOT(showNormal()));
-    connect(p->TitleWidget(), SIGNAL(CloseWnd()), this, SLOT(close()));
-    p->TitleWidget()->SetMoveTarget(this);
-
-    d.index = ui->panel->addWidget(p);
-    d.page = p;
-
-    p->TitleWidget()->SetText(d.title);
+    ui->panel->AddPage(d);
     ui->listWidget->AppendItem(d);
 
-
-
-
-
-
-
-
-    return d.index;
+    return d->index;
 }
 
 QMargins MainPanel::FixRatioTransform(const QMargins &g)
 {
+    if(g.isNull())
+        return g;
     Screen* s = ui->panel->CurrentPage()->ScreenWidget();
 
     QSize intend = (s->geometry() + g).size();

@@ -3,6 +3,9 @@
 
 #include <QObject>
 class Page;
+class QListWidgetItem;
+class ItemWidget;
+class MainPanel;
 
 class PageData : public QObject
 {
@@ -11,6 +14,9 @@ public:
     int index;
     QString title;
     Page* page;
+    QListWidgetItem* item;
+    ItemWidget* itemWidget;
+    MainPanel* mainPanel;
 
 public:
     explicit PageData(QObject *parent = 0);

@@ -7,7 +7,6 @@ namespace Ui {
 class ItemWidget;
 }
 class FramelessMove;
-class QListWidgetItem;
 class SnapshotPage;
 
 class ItemWidget : public QWidget
@@ -19,10 +18,8 @@ public:
     ~ItemWidget();
     void SetText(QString t);
     QString Text() const;
-    void SaveItem(QListWidgetItem* it);
     void ShowSnap(QWidget *snapWidget);
     bool IsSnapHidden();
-    QListWidgetItem* Item();
 
 signals:
     void Pressed();
@@ -35,7 +32,6 @@ private slots:
 private:
     Ui::ItemWidget *ui;
     FramelessMove* _frame;
-    QListWidgetItem* _it;
     SnapshotPage* _snappage;
 };
 

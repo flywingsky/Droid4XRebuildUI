@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     DxUi* ui = new DxUi(&a);
+    ui = new DxUi(&a);
 //    Toolbar* t = new Toolbar();
 //    t->show();
 
