@@ -6,17 +6,15 @@ class Page;
 class QListWidgetItem;
 class ItemWidget;
 class MainPanel;
+class SwitchableListWidget;
 
 class PageData : public QObject
 {
     Q_OBJECT
 public:
-    int index;
     QString title;
     Page* page;
-    QListWidgetItem* item;
-    ItemWidget* itemWidget;
-    MainPanel* mainPanel;
+
 
 public:
     explicit PageData(QObject *parent = 0);

@@ -23,7 +23,6 @@ MainPanel::MainPanel(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(ui->listWidget, SIGNAL(DragOut(QListWidgetItem*)), this, SIGNAL(DragOut(QListWidgetItem*)));
 
     FramelessMove::SetFrameLess(true,this);
 
@@ -42,6 +41,11 @@ MainPanel::MainPanel(QWidget *parent) :
 
 
     connect(ui->listWidget, SIGNAL(ActivePage(QWidget*)), ui->panel, SLOT(setCurrentWidget(QWidget*)));
+    connect(ui->listWidget, SIGNAL(DragLeave(PageData*)), ui->panel, SLOT(DeletePage(PageData*)));
+    connect(ui->listWidget, SIGNAL(DragEnter(PageData*)), ui->panel, SLOT(AddPage(PageData*)));
+    connect(ui->listWidget, SIGNAL(DragOut(PageData*)), this, SIGNAL(DragOut(PageData*)));
+
+    connect(ui->panel, SIGNAL(Empty()), this, SLOT(close()));
 
     setLayout(new QGridLayout(this));
     layout()->addWidget(_splitter);
@@ -54,12 +58,10 @@ MainPanel::~MainPanel()
     delete ui;
 }
 
-int MainPanel::AddPage(PageData* d)
+void MainPanel::AddPage(PageData* d)
 {
     ui->panel->AddPage(d);
     ui->listWidget->AppendItem(d);
-
-    return d->index;
 }
 
 QMargins MainPanel::FixRatioTransform(const QMargins &g)

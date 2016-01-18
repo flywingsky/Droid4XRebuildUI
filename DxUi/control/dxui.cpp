@@ -17,8 +17,7 @@ DxUi::DxUi(QObject *parent) :
     for(int n=0; n<10; ++n)
     {
         PageData* d = new PageData;
-        d->mainPanel = p;
-        d->title = QString::number(n);
+        d->title = QString::number(n) + QString::number((int)d);
         p->AddPage(d);
         _datas.append(d);
     }
@@ -29,16 +28,16 @@ DxUi::DxUi(QObject *parent) :
 MainPanel* DxUi::CreatePanel()
 {
     MainPanel* p = new MainPanel();
-    connect(p, SIGNAL(DragOut(QListWidgetItem*)), this, SLOT(DragOutCreate(QListWidgetItem*)));
+    connect(p, SIGNAL(DragOut(PageData*)), this, SLOT(DragOutCreate(PageData*)));
     return p;
 }
 
-void DxUi::DragOutCreate(QListWidgetItem *it)
+void DxUi::DragOutCreate(PageData* d)
 {
-//    MainPanel* p = CreatePanel();
-//    PageData d = SwitchableListWidget::GetPageData(it);
-//    p->AddPage(d);
-//    p->move(QCursor::pos());
-//    p->show();
+    MainPanel* p = CreatePanel();
+    p->AddPage(d);
+    p->move(QCursor::pos());
+    p->show();
+    _datas.append(d);
 }
 

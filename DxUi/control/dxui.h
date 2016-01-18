@@ -18,7 +18,7 @@ public:
 signals:
 
 public slots:
-    void DragOutCreate(QListWidgetItem* it);
+    void DragOutCreate(PageData *d);
 
 private:
     QList<PageData*> _datas;

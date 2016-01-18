@@ -15,30 +15,30 @@ class SwitchableListWidget : public QListWidget
     Q_OBJECT
 public:
     static PageData *GetPageData(const QListWidgetItem* it);
-    static PageData *GetPageData(const QMimeData* d);
+
+    static PageData *ReadMimeData(const QMimeData* d);
+    static QMimeData* CreateMimeData(PageData *d);
 
 
 public:
     explicit SwitchableListWidget(QWidget *parent = 0);
     PageData *GetPageData(const ItemWidget* wnd);
 
-    void AppendItem(PageData* d);
+    QListWidgetItem *AppendItem(PageData* d);
+    void DeleteItem(QListWidgetItem* it);
 
 
     QListWidgetItem * itemAtEx(const QPoint & p) const;
 
 signals:
     void ActivePage(QWidget* w);
-    void DragOut(QListWidgetItem* it);
+    void DragLeave(PageData* d);
+    void DragEnter(PageData* d);
+    void DragOut(PageData* d);
 
 public slots:
-    void Test(Qt::DropAction action);
 
 protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-
     void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
     void dragLeaveEvent(QDragLeaveEvent *event);
@@ -47,8 +47,7 @@ protected:
 
 
 private:
-    void JumpQueue(int src, int des, bool front = true);
-    void ShowSnap(bool show);
+    void JumpQueue(int src, int des);
 
     void HideItem(QListWidgetItem* it) const;
     void ShowItem(QListWidgetItem* it) const;
@@ -56,7 +55,7 @@ private:
     void InitAnimation();
     void StartAnimation();
 
-    QMimeData* CreateMimeData(QListWidgetItem* it) const;
+
 
 
 private slots:
@@ -66,7 +65,8 @@ private slots:
 private:
     QListWidgetItem* _dragItem;
     QParallelAnimationGroup* _itemAnimation;
-    QDrag* _drag;
+    static QDrag* _drag;
+
 
 };
 

@@ -20,12 +20,12 @@ public:
     explicit MainPanel(QWidget *parent = 0);
     ~MainPanel();
 
-    int AddPage(PageData *d);
+    void AddPage(PageData *d);
 
 
 
 signals:
-    void DragOut(QListWidgetItem* it);
+    void DragOut(PageData* d);
 
 private:
     QMargins FixRatioTransform(const QMargins& g);

@@ -14,13 +14,19 @@ class Panel : public QStackedWidget
 public:
     explicit Panel(QWidget *parent = 0);
 
-    void AddPage(PageData *d);
-
     Page* CurrentPage();
 
 signals:
+    void Empty();
 
 public slots:
+    void AddPage(PageData *d);
+    void DeletePage(PageData* d);
+
+
+private:
+
+    MainPanel* _panel;
 
 };
 
