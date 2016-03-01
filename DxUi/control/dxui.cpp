@@ -12,16 +12,6 @@
 DxUi::DxUi(QObject *parent) :
     QObject(parent)
 {
-    MainPanel* p = CreatePanel();
-    QString s;
-    for(int n=0; n<10; ++n)
-    {
-        PageData* d = new PageData;
-        d->title = QString::number(n) + QString::number((int)d);
-        p->AddPage(d);
-        _datas.append(d);
-    }
-    p->show();
 
 }
 
@@ -32,12 +22,17 @@ MainPanel* DxUi::CreatePanel()
     return p;
 }
 
+void DxUi::AddPage(MainPanel *p, PageData *d)
+{
+    p->AddPage(d);
+    _datas.append(d);
+}
+
 void DxUi::DragOutCreate(PageData* d)
 {
     MainPanel* p = CreatePanel();
-    p->AddPage(d);
+    AddPage(p,d);
     p->move(QCursor::pos());
     p->show();
-    _datas.append(d);
 }
 

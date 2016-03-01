@@ -14,6 +14,8 @@ public:
     explicit DxUi(QObject *parent = 0);
 
     MainPanel* CreatePanel();
+    void AddPage(MainPanel* p, PageData* d);
+
 
 signals:
 

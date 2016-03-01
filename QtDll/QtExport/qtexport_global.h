@@ -1,0 +1,12 @@
+#ifndef QTEXPORT_GLOBAL_H
+#define QTEXPORT_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(QTEXPORT_LIBRARY)
+#  define QTEXPORTSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define QTEXPORTSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // QTEXPORT_GLOBAL_H
