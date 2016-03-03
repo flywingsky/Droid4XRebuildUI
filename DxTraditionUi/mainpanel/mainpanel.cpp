@@ -44,9 +44,17 @@ void MainPanel::DragMove(QPoint offset)
 {
     if(windowState() != Qt::WindowNoState)
     {
+        QSize sMax = size();
+        QPoint pMax = pos();
+
         setWindowState(Qt::WindowNoState);
         QApplication::processEvents();
-        move(QCursor::pos() - QPoint(ui->title->width()/2,ui->title->height()/2));
+
+        // 这一大段是用数学公式算出来的，目的就是让鼠标放在等比的位置上
+        int x = (1.0-(qreal)width()/sMax.width())*QCursor::pos().x() + pMax.x()*(qreal)width()/sMax.width();
+        int y = pMax.y() + offset.y();
+
+        move(x,y);
     }
     else
         move(pos() + offset);

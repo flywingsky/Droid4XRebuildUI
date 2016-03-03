@@ -15,7 +15,9 @@ INCLUDEPATH += \
     ./mainpanel \
     ./title \
     ./screen \
-    ./include
+    ./include \
+    ./toolbar \
+    ./msgcenter
 
 SOURCES += main.cpp \
     mainpanel/mainpanel.cpp \
@@ -24,7 +26,10 @@ SOURCES += main.cpp \
     include/framelessmove.cpp \
     include/framelessresize.cpp \
     include/path.cpp \
-    include/qss.cpp
+    include/qss.cpp \
+    toolbar/toolbar.cpp \
+    msgcenter/ReadWriteLocker.cpp \
+    msgcenter/UIMsgMgr.cpp
 
 HEADERS  += \
     mainpanel/mainpanel.h \
@@ -33,9 +38,14 @@ HEADERS  += \
     include/framelessmove.h \
     include/framelessresize.h \
     include/path.h \
-    include/qss.h
+    include/qss.h \
+    toolbar/toolbar.h \
+    msgcenter/IMsgObsever.h \
+    msgcenter/ReadWriteLocker.h \
+    msgcenter/UIMsgMgr.h
 
 FORMS    += \
     mainpanel/mainpanel.ui \
     title/title.ui \
-    screen/screen.ui
+    screen/screen.ui \
+    toolbar/toolbar.ui
