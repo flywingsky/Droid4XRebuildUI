@@ -1,0 +1,9 @@
+QWidget#title
+{
+
+border-image: url(:/title_background)0 220 0 220;
+
+border-width:0 220 0 220;
+
+}
+

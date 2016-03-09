@@ -17,7 +17,9 @@ public:
         QPushButton,
         QDialog,
         QLabel,
-        QMenu
+        QMenu,
+
+        Title
     };
 
 public:

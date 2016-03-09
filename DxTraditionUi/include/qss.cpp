@@ -10,8 +10,8 @@ QFile* qssfiles[] = {
     new QFile(":/qss/qss/QPushButton.qss"),
     new QFile(":/qss/qss/QDialog.qss"),
     new QFile(":/qss/QLabel.qss"),
-    new QFile(":/qss/QMenu.qss")
-
+    new QFile(":/qss/QMenu.qss"),
+    new QFile("://title.qss")
 
 };
 

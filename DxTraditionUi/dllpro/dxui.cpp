@@ -3,7 +3,10 @@
 #include "mainpanel.h"
 #include "toolbar.h"
 
-DxUi::DxUi()
+#include "dxuiprivate.h"
+
+DxUi::DxUi() :
+    d_ptr(new DxUiPrivate(this))
 {
 
 }
@@ -15,10 +18,25 @@ IMsgMgr *DxUi::GetMsgMgr()
 
 void DxUi::CreateMainWnd()
 {
-    MainPanel* p = new MainPanel();
-    p->show();
+    Q_D(DxUi);
+    d->_mainPanel = new MainPanel();
+    d->_mainPanel->show();
+    d->_mainPanel->SetScale(QSize(10,5));
 
-    ToolBar* t = new ToolBar(p);
-    t->show();
+    d->_toolbar = new ToolBar(d->_mainPanel);
+    d->_toolbar->show();
+
+    d->_mainPanel->SetToolbar(d->_toolbar);
+}
+
+IUiProperty *DxUi::GetProperty() const
+{
+    return d_ptr;
+}
+
+DxUi::DxUi(DxUiPrivate *dd) :
+    d_ptr(dd)
+{
+
 }
 

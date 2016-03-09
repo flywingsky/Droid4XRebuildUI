@@ -1,13 +1,13 @@
 #ifndef TOOLBAR_H
 #define TOOLBAR_H
 
-#include <QDialog>
+#include <QWidget>
 
 namespace Ui {
 class ToolBar;
 }
 
-class ToolBar : public QDialog
+class ToolBar : public QWidget
 {
     Q_OBJECT
 
@@ -15,9 +15,17 @@ public:
     explicit ToolBar(QWidget *parent = 0);
     ~ToolBar();
 
+    void SetLandscape();
+    void SetPortrait();
+
+protected:
+    virtual void	paintEvent(QPaintEvent * event);
+    virtual void	resizeEvent(QResizeEvent * event);
+
+
 private slots:
-    void testPost();
-    void testSend();
+
+
 
 private:
     Ui::ToolBar *ui;

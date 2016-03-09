@@ -2,15 +2,15 @@
 #include "ui_toolbar.h"
 
 #include "UIMsgMgr.h"
+#include "commonfunc.h"
+
+#include <QPainter>
 
 ToolBar::ToolBar(QWidget *parent) :
-    QDialog(parent),
+    QWidget(parent),
     ui(new Ui::ToolBar)
 {
     ui->setupUi(this);
-
-    connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(testPost()));
-    connect(ui->pushButton_2, SIGNAL(clicked()), this, SLOT(testSend()));
 
 }
 
@@ -19,16 +19,34 @@ ToolBar::~ToolBar()
     delete ui;
 }
 
-void ToolBar::testPost()
+void ToolBar::SetLandscape()
 {
-    IMsgMgr* mgr = CUIMsgMgr::GetMsgMgr();
-    QString* msg = new QString("this is test post");
-    mgr->PostMsg(112,msg,NULL);
+    setMinimumSize(0,68);
+    setMaximumSize(QWIDGETSIZE_MAX,68);
 }
 
-void ToolBar::testSend()
+void ToolBar::SetPortrait()
 {
-    IMsgMgr* mgr = CUIMsgMgr::GetMsgMgr();
-    QString msg("this is test send");
-    mgr->SendMsg(221,NULL,&msg);
+    setMinimumSize(68,0);
+    setMaximumSize(68,QWIDGETSIZE_MAX);
+}
+
+
+void ToolBar::paintEvent(QPaintEvent *event)
+{
+    QWidget::paintEvent(event);
+    QPainter p(this);
+
+    if(CommonFunc::IsLandscape(this))
+        p.fillRect(QRect(0,0,width(),height()), QColor("#00ff00"));
+    else
+        p.fillRect(QRect(0,0,width(),height()), QColor("#00ffff"));
+}
+
+void ToolBar::resizeEvent(QResizeEvent *event)
+{
+    if(CommonFunc::IsLandscape(this))
+        SetLandscape();
+    else
+        SetPortrait();
 }

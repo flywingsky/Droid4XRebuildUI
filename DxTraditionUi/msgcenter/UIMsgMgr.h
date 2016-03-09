@@ -11,8 +11,8 @@ using namespace std;
 typedef struct MsgItem
 {
 	UINT m_iMsgId;
-	void *m_pWParam;
-	void *m_pLParam;
+    void *m_pWParam;
+    void *m_pLParam;
 	UINT m_lWParamLen;
 	UINT m_lLParamLen;
 
@@ -26,8 +26,8 @@ typedef struct MsgItem
 	}
 } STRU_MSG_ITEM;
 
-//CUIMsgMgr Ê¹ÓÃÁËµ¥ÀıÄ£Ê½
-//×¢Òâ¶ÔÏóÉú³ÉµÄÊ±»ú(²»ÒªÔÚMainº¯ÊıÖ®Ç°´´½¨[¹¹Ôìº¯ÊıÔì³Éapiµ÷ÓÃ£¡])
+//CUIMsgMgr ä½¿ç”¨äº†å•ä¾‹æ¨¡å¼
+//æ³¨æ„å¯¹è±¡ç”Ÿæˆçš„æ—¶æœº(ä¸è¦åœ¨Mainå‡½æ•°ä¹‹å‰åˆ›å»º[æ„é€ å‡½æ•°é€ æˆapiè°ƒç”¨ï¼])
 
 class CUIMsgMgr :
 	public IMsgMgr
@@ -39,11 +39,11 @@ public:
 	
 	~CUIMsgMgr(void);
 
-	//Ìí¼Ó/ÒÆ³ıÏûÏ¢Ó³Éä
-	virtual bool RegMsg(unsigned int auMsgID,IMsgObsever *apObsever,bool abReg);
+	//æ·»åŠ /ç§»é™¤æ¶ˆæ¯æ˜ å°„
+    virtual bool RegMsg(unsigned int auMsgID,IMsgObsever *apObsever,bool abReg);
 
-	//·¢ËÍÏûÏ¢
-	virtual long SendMsg(unsigned int auMsgID,void *apWParam,void *apLParam);
+	//å‘é€æ¶ˆæ¯
+    virtual long SendMsg(unsigned int auMsgID,void *apWParam,void *apLParam);
 	
     virtual void PostMsg(unsigned int auMsgID,void *apWParam,void *apLParam);
 
@@ -51,7 +51,7 @@ public:
 protected:
 	CUIMsgMgr(void);
 
-	long DoNotify(unsigned int auMsgID,void *apWParam,void *apLParam);
+    long DoNotify(unsigned int auMsgID,void *apWParam,void *apLParam);
 
 	static DWORD WINAPI MsgDispachProc(LPVOID apParam);
 	
@@ -65,11 +65,11 @@ private:
 	queue<STRU_MSG_ITEM> m_qMsg;
 
 
-	CReadWriteLocker m_RegSWMR;        //ÓÃÓÚ¿ØÖÆ m_mapObseverList;
-	CReadWriteLocker m_DispachSWMR;    //ÓÃÓÚ¿ØÖÆm_qMsg;
+	CReadWriteLocker m_RegSWMR;        //ç”¨äºæ§åˆ¶ m_mapObseverList;
+	CReadWriteLocker m_DispachSWMR;    //ç”¨äºæ§åˆ¶m_qMsg;
 
-	HANDLE m_hDispatchLoopExitEvent; //ÍË³öÏûÏ¢ÅÉÇ²Ñ­»·µÄÊÂ¼ş
-	HANDLE m_hMsgComingEvent;        //ÏûÏ¢µ½À´ÊÂ¼ş
+	HANDLE m_hDispatchLoopExitEvent; //é€€å‡ºæ¶ˆæ¯æ´¾é£å¾ªç¯çš„äº‹ä»¶
+	HANDLE m_hMsgComingEvent;        //æ¶ˆæ¯åˆ°æ¥äº‹ä»¶
 
 
 	HANDLE			m_hDispachThread;

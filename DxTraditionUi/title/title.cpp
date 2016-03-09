@@ -1,6 +1,10 @@
 #include "title.h"
 #include "ui_title.h"
 
+#include <QPainter>
+
+#include "qss.h"
+
 Title::Title(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Title)
@@ -8,6 +12,11 @@ Title::Title(QWidget *parent) :
     ui->setupUi(this);
 
     CreateButtons();
+
+    Qss* qss = new Qss(this);
+    qss->AddSheet(Qss::Title);
+    qss->Sync();
+
 }
 
 Title::~Title()
@@ -38,5 +47,13 @@ void Title::mouseDoubleClickEvent(QMouseEvent *event)
     QWidget::mouseDoubleClickEvent(event);
 }
 
-
+void Title::paintEvent(QPaintEvent *event)
+{
+    QWidget::paintEvent(event);
+    Q_UNUSED(event);
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
 

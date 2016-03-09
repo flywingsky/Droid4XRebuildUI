@@ -29,6 +29,7 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent * event);
 
 
+    void paintEvent(QPaintEvent *event);
 private:
     void CreateButtons();
 

@@ -17,7 +17,9 @@ INCLUDEPATH += \
     ./screen \
     ./include \
     ./toolbar \
-    ./msgcenter
+    ./msgcenter \
+    ./uiproperty \
+    ./dllpro
 
 SOURCES += main.cpp \
     mainpanel/mainpanel.cpp \
@@ -29,7 +31,9 @@ SOURCES += main.cpp \
     include/qss.cpp \
     toolbar/toolbar.cpp \
     msgcenter/ReadWriteLocker.cpp \
-    msgcenter/UIMsgMgr.cpp
+    msgcenter/UIMsgMgr.cpp \
+    dllpro/dxui.cpp \
+    dllpro/dxuiprivate.cpp
 
 HEADERS  += \
     mainpanel/mainpanel.h \
@@ -42,7 +46,11 @@ HEADERS  += \
     toolbar/toolbar.h \
     msgcenter/IMsgObsever.h \
     msgcenter/ReadWriteLocker.h \
-    msgcenter/UIMsgMgr.h
+    msgcenter/UIMsgMgr.h \
+    uiproperty/iuiproperty.h \
+    dllpro/dllpro_global.h \
+    dllpro/dxui.h \
+    dllpro/dxuiprivate.h
 
 FORMS    += \
     mainpanel/mainpanel.ui \

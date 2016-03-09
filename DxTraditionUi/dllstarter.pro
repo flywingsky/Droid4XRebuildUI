@@ -15,15 +15,18 @@ INCLUDEPATH += \
     ./dllstarter \
     ./dllpro \
     ./msgcenter \
-    ./Product
-    ./ProductD
+    ./Product \
+    ./ProductD \
+    ./uiproperty
 
 SOURCES += dllstarter/main.cpp
 
 HEADERS  += \
     dllpro/dllpro_global.h \
     dllpro/dxui.h \
-    msgcenter/IMsgObsever.h
+    msgcenter/IMsgObsever.h \
+    uiproperty/iuiproperty.h \
+    msgcenter/msgdef.h
 
 
 CONFIG(debug, debug|release) {

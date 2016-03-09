@@ -15,6 +15,12 @@ public:
     explicit Screen(QWidget *parent = 0);
     ~Screen();
 
+protected:
+    virtual void	mousePressEvent(QMouseEvent * event);
+    virtual void	mouseReleaseEvent(QMouseEvent * event);
+    virtual void	mouseMoveEvent(QMouseEvent * event);
+    virtual void	resizeEvent(QResizeEvent * event);
+
 private:
     Ui::Screen *ui;
 };

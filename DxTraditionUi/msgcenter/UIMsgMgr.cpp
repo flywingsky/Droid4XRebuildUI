@@ -35,33 +35,33 @@ CUIMsgMgr::~CUIMsgMgr(void)
 		m_hMsgComingEvent = NULL;
 	}
 
-	//ÓĞ·çÏÕ,Ò»¶¨ÒªÈ·±£Ã»ÓĞÏûÏ¢²Ù×÷ÁË²Å³·ÏúCUIMsgMgr¶ÔÏó
+	//æœ‰é£é™©,ä¸€å®šè¦ç¡®ä¿æ²¡æœ‰æ¶ˆæ¯æ“ä½œäº†æ‰æ’¤é”€CUIMsgMgrå¯¹è±¡
 	map<unsigned int,IObseverList>::iterator litor = m_mapObseverList.begin();
 	for(;  litor != m_mapObseverList.end(); ++ litor)
 		litor->second.clear();
 	m_mapObseverList.clear();
 }
 
-//Ìí¼Ó/ÒÆ³ıÏûÏ¢Ó³Éä
+//æ·»åŠ /ç§»é™¤æ¶ˆæ¯æ˜ å°„
 bool CUIMsgMgr::RegMsg(unsigned int auMsgID,IMsgObsever *apObsever,bool abReg)
 {
 	bool lbRet = false;
-	if (apObsever)
+    if (apObsever)
 	{
-		if (abReg)
+        if (abReg)
 		{
 			m_RegSWMR.WaitToWrite();
-			// Ìí¼ÓÏûÏ¢Ó³Éä
-			map<unsigned int,IObseverList>::iterator litor = m_mapObseverList.find(auMsgID);
+			// æ·»åŠ æ¶ˆæ¯æ˜ å°„
+            map<unsigned int,IObseverList>::iterator litor = m_mapObseverList.find(auMsgID);
 			if (litor == m_mapObseverList.end())
 			{
 				IObseverList llistObsevers;
-				llistObsevers.insert(apObsever);
-				m_mapObseverList[auMsgID] = llistObsevers;
+                llistObsevers.insert(apObsever);
+                m_mapObseverList[auMsgID] = llistObsevers;
 			}
 			else
 			{
-				litor->second.insert(apObsever);
+                litor->second.insert(apObsever);
 			}
 
 			m_RegSWMR.Done();
@@ -69,12 +69,12 @@ bool CUIMsgMgr::RegMsg(unsigned int auMsgID,IMsgObsever *apObsever,bool abReg)
 		else
 		{
             m_RegSWMR.WaitToWrite();
-			// ÒÆ³ıÏûÏ¢Ó³Éä
-			map<unsigned int,IObseverList>::iterator litor = m_mapObseverList.find(auMsgID);
+			// ç§»é™¤æ¶ˆæ¯æ˜ å°„
+            map<unsigned int,IObseverList>::iterator litor = m_mapObseverList.find(auMsgID);
 			if (litor != m_mapObseverList.end())
 			{
-				m_mapObseverList[auMsgID].erase(apObsever);
-				if (m_mapObseverList[auMsgID].empty())
+                m_mapObseverList[auMsgID].erase(apObsever);
+                if (m_mapObseverList[auMsgID].empty())
 				{
 					m_mapObseverList.erase(litor);
 				}
@@ -87,14 +87,14 @@ bool CUIMsgMgr::RegMsg(unsigned int auMsgID,IMsgObsever *apObsever,bool abReg)
 	return lbRet;
 }
 
-//´¦ÀíUIÊı¾İ
+//å¤„ç†UIæ•°æ®
 void CUIMsgMgr::PostMsg(unsigned int auMsgID,void *apWParam,void *apLParam)
 {
 	//DoNotify(aiMsg,awParam,alParam);
 	STRU_MSG_ITEM loMsg;
-	loMsg.m_iMsgId = auMsgID;
-	loMsg.m_pWParam = apWParam;
-	loMsg.m_pLParam = apLParam;
+    loMsg.m_iMsgId = auMsgID;
+    loMsg.m_pWParam = apWParam;
+    loMsg.m_pLParam = apLParam;
 
 	m_DispachSWMR.WaitToWrite();
 	m_qMsg.push(loMsg);
@@ -111,13 +111,13 @@ void CUIMsgMgr::PostMsg(unsigned int auMsgID,void *apWParam,void *apLParam)
 //				if (STILL_ACTIVE == ldwExitCode)
 //				{
 //					TCHAR lsInfo[512] = { 0 };
-//					_stprintf(lsInfo,TEXT("ÏûÏ¢·Ö·¢Ïß³Ì»¹ÔÚÔËĞĞ£¬»ıÀÛÏûÏ¢Êı:%d"),llMsgNum);
+//					_stprintf(lsInfo,TEXT("æ¶ˆæ¯åˆ†å‘çº¿ç¨‹è¿˜åœ¨è¿è¡Œï¼Œç§¯ç´¯æ¶ˆæ¯æ•°:%d"),llMsgNum);
 //					::OutputDebugString(lsInfo);
 //				}
 //				else
 //				{
 //					TCHAR lsInfo[512] = { 0 };
-//					_stprintf(lsInfo,TEXT("ÏûÏ¢·Ö·¢Ïß³ÌÒÑÍË³ö:%d"),ldwExitCode);
+//					_stprintf(lsInfo,TEXT("æ¶ˆæ¯åˆ†å‘çº¿ç¨‹å·²é€€å‡º:%d"),ldwExitCode);
 //					::OutputDebugString(lsInfo);
 //				}
 //			}
@@ -135,7 +135,7 @@ long CUIMsgMgr::DoNotify(unsigned int auMsgID,void *apWParam,void *apLParam)
 	long llRet = -1;
 
 	m_RegSWMR.WaitToRead();
-	map<unsigned int,IObseverList>::iterator litor = m_mapObseverList.find(auMsgID);
+    map<unsigned int,IObseverList>::iterator litor = m_mapObseverList.find(auMsgID);
 	if (litor != m_mapObseverList.end())
 	{
 		IObseverList loObsevers = litor->second;
@@ -145,7 +145,7 @@ long CUIMsgMgr::DoNotify(unsigned int auMsgID,void *apWParam,void *apLParam)
 			IMsgObsever *lpObsever = *litPos;
 			if (lpObsever)
 			{
-				llRet = lpObsever->Notify(auMsgID,apWParam,apLParam);
+                llRet = lpObsever->Notify(auMsgID,apWParam,apLParam);
 			}
 		}
 	}
@@ -158,15 +158,15 @@ IMsgMgr* CUIMsgMgr::GetMsgMgr()
 {
 	if (m_pInstance == NULL)
 	{
-		m_pInstance = new CUIMsgMgr();
+        m_pInstance = new CUIMsgMgr();
 	}
 	return (IMsgMgr*)m_pInstance;
 }
 
-//·¢ËÍÏûÏ¢
+//å‘é€æ¶ˆæ¯
 long CUIMsgMgr::SendMsg(unsigned int auMsgID,void *apWParam,void *apLParam)
 {
-	long llRet = DoNotify(auMsgID,apWParam,apLParam);
+    long llRet = DoNotify(auMsgID,apWParam,apLParam);
 	return llRet;
 }
 
@@ -209,7 +209,7 @@ DWORD CUIMsgMgr::DispatchAppMsg()
 					DoNotify(loMsg.m_iMsgId,loMsg.m_pWParam, loMsg.m_pLParam);					
 				}
 				else
-					break;  //ÏûÏ¢ÍËÁĞ´¦Àí¸É¾»£¡£¡£¡
+					break;  //æ¶ˆæ¯é€€åˆ—å¤„ç†å¹²å‡€ï¼ï¼ï¼
 			}
 		}
 
@@ -236,7 +236,7 @@ void CUIMsgMgr::StopMsgDispach()
 	::SetEvent(m_hDispatchLoopExitEvent);
 	if(WaitForSingleObject(m_hDispatchLoopExitEvent, 500) == WAIT_TIMEOUT)
 	{
-		//Ôã¸âµÄÊÂÇé·¢ÉúÁË£¡£¡£¡£¡
+		//ç³Ÿç³•çš„äº‹æƒ…å‘ç”Ÿäº†ï¼ï¼ï¼ï¼
 		::TerminateThread(m_hDispachThread, -1);
 	}
 

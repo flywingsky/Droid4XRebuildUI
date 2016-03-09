@@ -8,7 +8,10 @@
 FramelessResize::FramelessResize(QObject *parent) : QObject(parent),
     _monitor(NULL),
     _target(NULL),
-    _pressDirection(NONE)
+    _elastic(NULL),
+    _pressDirection(NONE),
+    _scale(0,0)
+
 {
 
 }
@@ -35,6 +38,12 @@ void FramelessResize::SetBorderWidth(int w)
 int FramelessResize::BorderWidth()
 {
     return _borderWidth;
+}
+
+void FramelessResize::SetScale(QSize s,  QWidget* elastic)
+{
+    _scale = s;
+    _elastic = elastic;
 }
 
 bool FramelessResize::eventFilter(QObject *obj, QEvent *ev)
@@ -122,8 +131,47 @@ void FramelessResize::DragResize(QEvent *ev)
     if(_pressDirection & BOTTOM)
         offset.setBottom((e->pos() - e->oldPos() ).y());
 
+    offset = FixRatioTransform(offset,_scale, _monitor, _elastic);
     emit OffsetGeometry(offset);
 
     if(_target)
         _target->setGeometry(_target->geometry() + offset);
+}
+
+
+QMargins FramelessResize::FixRatioTransform(const QMargins &g, const QSize& scale, const QWidget* parent, const QWidget* elastic)
+{
+    if(elastic == NULL || parent == NULL || g.isNull() || scale.isNull())
+        return g;
+
+    QSize fix = parent->size() - elastic->size();
+    QSize intend = (elastic->geometry() + g).size();
+
+    int sum = g.left()+g.top()+g.right()+g.bottom();
+    QSize except = scale.scaled(intend, (sum > 0 ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio)) + fix - parent->size();
+
+    QMargins ret;
+
+    qreal h = g.left() + g.right();
+    qreal v = g.top() + g.bottom();
+
+    if(h)
+    {
+        ret.setLeft(g.left() / h * except.width());
+        ret.setRight(g.right() / h * except.width());
+    }
+    else
+        ret.setRight(except.width());
+
+    if(v)
+    {
+        ret.setTop(g.top() / v * except.height());
+        ret.setBottom(g.bottom() / v * except.height());
+    }
+    else
+        ret.setBottom(except.height());
+
+
+    return ret;
+
 }

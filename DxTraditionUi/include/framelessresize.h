@@ -3,6 +3,7 @@
 
 #include <QMargins>
 #include <QObject>
+#include <QSize>
 
 class QWidget;
 
@@ -30,6 +31,10 @@ public:
     void SetBorderWidth(int w);
     int BorderWidth();
 
+    // 固定尺寸拖拽的比例。值无所谓，重要的是w/h。如果其中之一为0，则自由拖拽
+    void SetScale(QSize s,  QWidget* elastic);
+
+
 
 signals:
     void OffsetGeometry(QMargins geometry);
@@ -43,11 +48,17 @@ private:
     int GetDirection(const QPoint pt) const;
     void SetCursor(int direction);
     void DragResize(QEvent* ev);
+    static QMargins FixRatioTransform(const QMargins &g, const QSize &scale, const QWidget *parent, const QWidget *elastic);
+
 
 private:
     QWidget* _monitor;
     QWidget* _target;
+    QWidget* _elastic;
     int _pressDirection;
+    QSize _scale;
+
+
 
 
     int _borderWidth;
