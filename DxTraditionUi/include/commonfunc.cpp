@@ -27,3 +27,12 @@ bool CommonFunc::IsLandscape(QWidget *p)
 {
     return p->width() > p->height();
 }
+
+void CommonFunc::Relayout(CommonFunc::LayoutItems &items, QGridLayout *l)
+{
+    CommonFunc::ClearLayout(l);
+
+    foreach (LayoutItem item, items) {
+        l->addWidget(item.first,item.second.x(),item.second.y(),item.second.width(),item.second.height());
+    }
+}

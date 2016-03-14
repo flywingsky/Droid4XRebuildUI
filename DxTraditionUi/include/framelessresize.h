@@ -22,6 +22,9 @@ public:
         RIGHTBOTTOM = RIGHT | BOTTOM,
         RIGHTTOP = RIGHT | TOP
     };
+
+    static QMargins FixRatioTransform(const QMargins &g, const QSize &scale, const QWidget *parent, const QWidget *elastic);
+
 public:
     explicit FramelessResize(QObject *parent = 0);
 
@@ -33,6 +36,7 @@ public:
 
     // 固定尺寸拖拽的比例。值无所谓，重要的是w/h。如果其中之一为0，则自由拖拽
     void SetScale(QSize s,  QWidget* elastic);
+    QSize Scale() const;
 
 
 
@@ -48,7 +52,6 @@ private:
     int GetDirection(const QPoint pt) const;
     void SetCursor(int direction);
     void DragResize(QEvent* ev);
-    static QMargins FixRatioTransform(const QMargins &g, const QSize &scale, const QWidget *parent, const QWidget *elastic);
 
 
 private:

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>1178</width>
+    <height>688</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -58,7 +58,7 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="Screen" name="screen" native="true">
+    <widget class="ScreenFrame" name="client" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -77,9 +77,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>Screen</class>
+   <class>ScreenFrame</class>
    <extends>QWidget</extends>
-   <header>screen.h</header>
+   <header>screenframe.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

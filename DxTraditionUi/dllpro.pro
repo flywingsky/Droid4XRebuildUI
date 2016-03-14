@@ -36,7 +36,8 @@ SOURCES += \
     dllpro/dxui.cpp \
     dllpro/dxuiprivate.cpp \
     focus/focuswidget.cpp \
-    include/commonfunc.cpp
+    include/commonfunc.cpp \
+    screen/screenframe.cpp
 
 HEADERS +=\
         dllpro/dllpro_global.h \
@@ -56,7 +57,8 @@ HEADERS +=\
     uiproperty/iuiproperty.h \
     msgcenter/msgdef.h \
     focus/focuswidget.h \
-    include/commonfunc.h
+    include/commonfunc.h \
+    screen/screenframe.h
 
 unix {
     target.path = /usr/lib
@@ -67,7 +69,8 @@ FORMS += \
     toolbar/toolbar.ui \
     title/title.ui \
     screen/screen.ui \
-    mainpanel/mainpanel.ui
+    mainpanel/mainpanel.ui \
+    screen/screenframe.ui
 
 
 CONFIG(debug, debug|release) {

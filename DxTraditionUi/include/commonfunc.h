@@ -1,8 +1,14 @@
 #ifndef COMMONFUNC_H
 #define COMMONFUNC_H
 
+#include <QPair>
+#include <QList>
+
 class QLayout;
 class QWidget;
+class QRect;
+class QGridLayout;
+
 
 class CommonFunc
 {
@@ -16,6 +22,10 @@ public:
 
     /// @brief 判断是否为横屏
     static bool IsLandscape(QWidget* p);
+
+    typedef QPair<QWidget*, QRect> LayoutItem;
+    typedef QList<LayoutItem> LayoutItems;
+    static void Relayout(LayoutItems &items, QGridLayout* l);
 };
 
 #endif // COMMONFUNC_H

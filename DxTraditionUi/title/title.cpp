@@ -39,6 +39,9 @@ void Title::CreateButtons()
     _buttons["close"] = ui->btnClose;
     _buttons["max"] = ui->btnMax;
     _buttons["min"] = ui->btnMin;
+    _buttons["at"] = ui->pushButton;
+    _buttons["set"] = ui->pushButton_2;
+    _buttons["help"] = ui->pushButton_3;
 }
 
 void Title::mouseDoubleClickEvent(QMouseEvent *event)

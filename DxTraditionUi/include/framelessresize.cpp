@@ -46,6 +46,11 @@ void FramelessResize::SetScale(QSize s,  QWidget* elastic)
     _elastic = elastic;
 }
 
+QSize FramelessResize::Scale() const
+{
+    return _scale;
+}
+
 bool FramelessResize::eventFilter(QObject *obj, QEvent *ev)
 {
     if(obj == _monitor)
@@ -131,11 +136,14 @@ void FramelessResize::DragResize(QEvent *ev)
     if(_pressDirection & BOTTOM)
         offset.setBottom((e->pos() - e->oldPos() ).y());
 
-    offset = FixRatioTransform(offset,_scale, _monitor, _elastic);
-    emit OffsetGeometry(offset);
+    if(!offset.isNull())
+    {
+        offset = FixRatioTransform(offset,_scale, _monitor, _elastic);
+        emit OffsetGeometry(offset);
 
-    if(_target)
-        _target->setGeometry(_target->geometry() + offset);
+        if(_target)
+            _target->setGeometry(_target->geometry() + offset);
+    }
 }
 
 
@@ -175,3 +183,4 @@ QMargins FramelessResize::FixRatioTransform(const QMargins &g, const QSize& scal
     return ret;
 
 }
+

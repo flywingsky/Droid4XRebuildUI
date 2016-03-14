@@ -11,6 +11,7 @@ class FramelessMove;
 class FramelessResize;
 class Screen;
 class FocusWidget;
+class ToolBar;
 
 class MainPanel : public QDialog
 {
@@ -25,29 +26,46 @@ public:
     // 固定尺寸拖拽的比例。值无所谓，重要的是w/h。如果其中之一为0，则自由拖拽
     void SetScale(QSize s);
 
-    void SetToolbar(QWidget* t);
+    void SetToolbar(ToolBar *t);
+
+    void SetRotate(int r);
+
+
 
 public slots:
+
     void ReverseMaxStatus();
+
+    // 目前是测试用接口，不用的时候要删掉
+    void SetLandscape();
+    void SetPortrait();
 
 
 protected:
     void resizeEvent(QResizeEvent *event);
+    virtual void	moveEvent(QMoveEvent * event);
+    virtual void	changeEvent(QEvent * event);
 private:
     void InitTitle();
     void InitFocusWidget();
+
+
     void SetToolbarDockArea(Qt::DockWidgetArea postion);
-    void RelayoutToolbar();
+    void SetWithoutToolbarLayout(Qt::WindowStates ws);
+
 
 private slots:
     void DragMove(QPoint offset);
+    void RecodeNormalSize();
 
 private:
     Ui::MainPanel *ui;
     FramelessMove* _move;
     FramelessResize* _resize;
     FocusWidget* _focus;
-    QWidget* _toolbar;
+    ToolBar* _toolbar;
+    QRect _normalLandscape;
+    QRect _normalPortrait;
 
 };
 

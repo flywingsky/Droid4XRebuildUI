@@ -27,6 +27,7 @@ void DxUi::CreateMainWnd()
     d->_toolbar->show();
 
     d->_mainPanel->SetToolbar(d->_toolbar);
+    d->_mainPanel->SetRotate(0);
 }
 
 IUiProperty *DxUi::GetProperty() const

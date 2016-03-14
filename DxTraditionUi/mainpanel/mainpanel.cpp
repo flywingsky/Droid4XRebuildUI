@@ -8,6 +8,7 @@
 #include <QDebug>
 #include "qss.h"
 #include "commonfunc.h"
+#include "toolbar.h"
 
 MainPanel::MainPanel(QWidget *parent) :
     QDialog(parent),
@@ -15,7 +16,9 @@ MainPanel::MainPanel(QWidget *parent) :
     _move(new FramelessMove),
     _resize(new FramelessResize),
     _focus(NULL),
-    _toolbar(NULL)
+    _toolbar(NULL),
+    _normalLandscape(QRect(100,100,1178,688)),
+    _normalPortrait(100,100,447,780)
 {
     ui->setupUi(this);
     FramelessMove::SetFrameLess(true, this);
@@ -35,20 +38,50 @@ MainPanel::~MainPanel()
 
 Screen *MainPanel::GetScreen() const
 {
-    return ui->screen;
+    return ui->client->GetScreen();
 }
 
 void MainPanel::SetScale(QSize s)
 {
     Q_ASSERT(_resize);
-    _resize->SetScale(s,ui->screen);
+    _resize->SetScale(s,ui->client);
 }
 
-void MainPanel::SetToolbar(QWidget *t)
+void MainPanel::SetToolbar(ToolBar *t)
 {
     _toolbar = t;
 
-    RelayoutToolbar();
+}
+
+void MainPanel::SetRotate(int r)
+{
+    int min = qMin(_resize->Scale().width(),_resize->Scale().height());
+    int max = qMax(_resize->Scale().width(),_resize->Scale().height());
+
+    bool portrait = bool(r%180);
+
+    if(Qt::WindowNoState == windowState())
+    {
+        ui->client->SetScale(QSize());
+        SetToolbarDockArea(portrait ? Qt::LeftDockWidgetArea : Qt::BottomDockWidgetArea);
+        setGeometry(portrait ? _normalPortrait : _normalLandscape);
+    }
+    else
+    {
+        ui->client->SetScale(portrait ? QSize(min,max) : QSize(max, min));
+        SetWithoutToolbarLayout(windowState());
+    }
+}
+
+void MainPanel::SetLandscape()
+{
+    SetRotate(0);
+}
+
+void MainPanel::SetPortrait()
+{
+    SetRotate(90);
+
 }
 
 
@@ -61,7 +94,28 @@ void MainPanel::ReverseMaxStatus()
 
 void MainPanel::resizeEvent(QResizeEvent *event)
 {
-    RelayoutToolbar();
+    RecodeNormalSize();
+}
+
+void MainPanel::moveEvent(QMoveEvent *event)
+{
+    RecodeNormalSize();
+}
+
+void MainPanel::changeEvent(QEvent *event)
+{
+
+    if(event->type() == QEvent::WindowStateChange)
+    {
+        bool landscape = CommonFunc::IsLandscape((QWidget*)ui->client->GetScreen());
+        SetRotate(landscape ? 0 : 90);
+
+        if(Qt::WindowNoState == windowState())
+            layout()->setMargin(3);
+        else
+            layout()->setMargin(0);
+
+    }
 }
 
 void MainPanel::InitTitle()
@@ -72,6 +126,8 @@ void MainPanel::InitTitle()
     connect(ui->title->GetButton("close"), SIGNAL(clicked()), this, SLOT(close()));
     connect(ui->title->GetButton("max"), SIGNAL(clicked()), this, SLOT(ReverseMaxStatus()));
     connect(ui->title->GetButton("min"), SIGNAL(clicked()), this, SLOT(showMinimized()));
+    connect(ui->title->GetButton("at"), SIGNAL(clicked()), this, SLOT(SetLandscape()));
+    connect(ui->title->GetButton("set"), SIGNAL(clicked()), this, SLOT(SetPortrait()));
     connect(ui->title, SIGNAL(DoubleClicked()), this, SLOT(ReverseMaxStatus()));
 
 
@@ -89,55 +145,55 @@ void MainPanel::InitFocusWidget()
 
 void MainPanel::SetToolbarDockArea(Qt::DockWidgetArea postion)
 {
-    typedef QPair<QWidget*, QRect> LItem;
-    QList<LItem> putin;
+    Q_ASSERT(_toolbar);
+
+    CommonFunc::LayoutItems putin;
     switch(postion)
     {
     case Qt::LeftDockWidgetArea:
-        putin.append(LItem(ui->title,QRect(0,0,1,2)));
-        putin.append(LItem(_toolbar,QRect(1,0,1,1)));
-        putin.append(LItem(ui->screen,QRect(1,1,1,1)));
+        putin.append(CommonFunc::LayoutItem(ui->title,QRect(0,0,1,2)));
+        putin.append(CommonFunc::LayoutItem(_toolbar,QRect(1,0,1,1)));
+        putin.append(CommonFunc::LayoutItem(ui->client,QRect(1,1,1,1)));
+        _toolbar->SetPortrait();
         break;
     case Qt::BottomDockWidgetArea:
-        putin.append(LItem(ui->title,QRect(0,0,1,1)));
-        putin.append(LItem(ui->screen,QRect(1,0,1,1)));
-        putin.append(LItem(_toolbar,QRect(2,0,1,1)));
-        break;
-    case Qt::RightDockWidgetArea:
-        putin.append(LItem(ui->title,QRect(0,0,1,2)));
-        putin.append(LItem(ui->screen,QRect(1,0,1,1)));
-        putin.append(LItem(_toolbar,QRect(1,1,1,1)));
-        break;
-    case Qt::TopDockWidgetArea:
-        putin.append(LItem(ui->title,QRect(0,0,1,1)));
-        putin.append(LItem(_toolbar,QRect(1,0,1,1)));
-        putin.append(LItem(ui->screen,QRect(2,0,1,1)));
+        putin.append(CommonFunc::LayoutItem(ui->title,QRect(0,0,1,1)));
+        putin.append(CommonFunc::LayoutItem(ui->client,QRect(1,0,1,1)));
+        putin.append(CommonFunc::LayoutItem(_toolbar,QRect(2,0,1,1)));
+        _toolbar->SetLandscape();
         break;
     default:
-        putin.append(LItem(ui->title,QRect(0,0,1,1)));
-        putin.append(LItem(ui->screen,QRect(1,0,1,1)));
+        putin.append(CommonFunc::LayoutItem(ui->title,QRect(0,0,1,1)));
+        putin.append(CommonFunc::LayoutItem(ui->client,QRect(1,0,1,1)));
         break;
 
     }
 
-    CommonFunc::ClearLayout(layout());
-    QGridLayout* l = (QGridLayout*)layout();
+    CommonFunc::Relayout(putin, (QGridLayout*)layout());
 
-    foreach (LItem item, putin) {
-        l->addWidget(item.first,item.second.x(),item.second.y(),item.second.width(),item.second.height());
-    }
+
 }
 
-void MainPanel::RelayoutToolbar()
+void MainPanel::SetWithoutToolbarLayout(Qt::WindowStates ws)
 {
-    if(_toolbar)
+    CommonFunc::LayoutItems putin;
+    switch(ws)
     {
-        if(CommonFunc::IsLandscape(this))
-            SetToolbarDockArea(Qt::BottomDockWidgetArea);
-        else
-            SetToolbarDockArea(Qt::LeftDockWidgetArea);
+    case Qt::WindowFullScreen:
+        putin.append(CommonFunc::LayoutItem(ui->client,QRect(0,0,1,1)));
+        break;
+    case Qt::WindowMaximized:
+        putin.append(CommonFunc::LayoutItem(ui->title,QRect(0,0,1,1)));
+        putin.append(CommonFunc::LayoutItem(ui->client,QRect(1,0,1,1)));
+        break;
+    default:
+        putin.append(CommonFunc::LayoutItem(ui->title,QRect(0,0,1,1)));
+        putin.append(CommonFunc::LayoutItem(ui->client,QRect(1,0,1,1)));
+        break;
     }
+    CommonFunc::Relayout(putin, (QGridLayout*)layout());
 }
+
 
 void MainPanel::DragMove(QPoint offset)
 {
@@ -157,4 +213,15 @@ void MainPanel::DragMove(QPoint offset)
     }
     else
         move(pos() + offset);
+}
+
+void MainPanel::RecodeNormalSize()
+{
+    if(windowState() == Qt::WindowNoState)
+    {
+        if(CommonFunc::IsLandscape((QWidget*)ui->client->GetScreen()))
+            _normalLandscape = geometry();
+        else
+            _normalPortrait = geometry();
+    }
 }
