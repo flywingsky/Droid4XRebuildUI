@@ -12,7 +12,6 @@ ToolBar::ToolBar(QWidget *parent) :
 {
     ui->setupUi(this);
     CreateButtons();
-
 }
 
 ToolBar::~ToolBar()
@@ -39,9 +38,16 @@ void ToolBar::paintEvent(QPaintEvent *event)
     QPainter p(this);
 
     if(CommonFunc::IsLandscape(this))
-        p.fillRect(QRect(0,0,width(),height()), QColor("#00ff00"));
+    {
+        QPixmap pic("://toobar_bk.jpg");
+        p.drawPixmap(QRect(0,0,200,height()), pic, QRect(0,0,1,pic.height()));
+        p.drawPixmap(QRect(200,0,60,height()), pic, QRect(205,0,60,pic.height()));
+        p.drawPixmap(QRect(260,0,width(),height()), pic, QRect(pic.width()-1,0,1,pic.height()));
+    }
     else
-        p.fillRect(QRect(0,0,width(),height()), QColor("#00ffff"));
+    {
+        p.fillRect(QRect(0,0,width(),height()), QColor("#e1e1e1"));
+    }
 }
 
 void ToolBar::resizeEvent(QResizeEvent *event)

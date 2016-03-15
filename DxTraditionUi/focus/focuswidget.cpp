@@ -2,7 +2,7 @@
 #include <QInputMethodEvent>
 #include <QTextCodec>
 #include <QKeyEvent>
-//#include "imetunnel.h"
+#include <QApplication>
 #include "IMsgObsever.h"
 #include "UIMsgMgr.h"
 #include "msgdef.h"
@@ -12,6 +12,7 @@
 
 #ifdef WIN32
 #include <QPainter>
+#include <QPushButton>
 #include <qt_windows.h>
 #endif
 
@@ -21,6 +22,7 @@ FocusWidget::FocusWidget(QWidget *parent) :
 {
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_InputMethodEnabled, true);
+    connect(qApp, SIGNAL(focusChanged(QWidget*,QWidget*)), this, SLOT(FocusChanged(QWidget*,QWidget*)));
 }
 
 FocusWidget::~FocusWidget()
@@ -46,6 +48,7 @@ void FocusWidget::keyPressEvent(QKeyEvent *event)
     msg->PostMsg(InOut::KeyDown, &vk,event);
 }
 
+
 void FocusWidget::ShakeWidget()
 {
     static uint flag = 0;
@@ -53,6 +56,12 @@ void FocusWidget::ShakeWidget()
     QPoint pt = this->pos();
     pt.setX(pt.x() + (flag?1:-1));
     move(pt);
+}
+
+void FocusWidget::FocusChanged(QWidget *old, QWidget *now)
+{
+    if(qobject_cast<QPushButton*>(now))
+        setFocus();
 }
 
 void FocusWidget::inputMethodEvent(QInputMethodEvent *event)

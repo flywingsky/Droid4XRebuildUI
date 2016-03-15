@@ -26,6 +26,10 @@ public slots:
 private:
     void ShakeWidget();
 
+private slots:
+    void FocusChanged(QWidget* old, QWidget* now);
+
+
 };
 
 #endif // FOCUSWIDGET_H

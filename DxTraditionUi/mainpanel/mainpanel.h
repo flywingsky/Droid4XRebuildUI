@@ -47,6 +47,8 @@ protected:
     void resizeEvent(QResizeEvent *event);
     virtual void	moveEvent(QMoveEvent * event);
     virtual void	changeEvent(QEvent * event);
+    bool event(QEvent *e);
+    bool eventFilter(QObject *obj, QEvent *ev);
 private:
     void InitTitle();
     void InitFocusWidget();

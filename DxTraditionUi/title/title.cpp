@@ -10,7 +10,6 @@ Title::Title(QWidget *parent) :
     ui(new Ui::Title)
 {
     ui->setupUi(this);
-
     CreateButtons();
 
     Qss* qss = new Qss(this);

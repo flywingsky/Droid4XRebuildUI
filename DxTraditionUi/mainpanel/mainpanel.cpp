@@ -9,6 +9,7 @@
 #include "qss.h"
 #include "commonfunc.h"
 #include "toolbar.h"
+#include "screen.h"
 
 MainPanel::MainPanel(QWidget *parent) :
     QDialog(parent),
@@ -27,6 +28,9 @@ MainPanel::MainPanel(QWidget *parent) :
     _resize->SetBorderWidth(layout()->margin());
     InitTitle();
     InitFocusWidget();
+    installEventFilter(this);
+    ui->client->installEventFilter(this);
+    ui->client->GetScreen()->installEventFilter(this);
 
 
 }
@@ -49,12 +53,20 @@ void MainPanel::SetScale(QSize s)
 
 void MainPanel::SetToolbar(ToolBar *t)
 {
-    _toolbar = t;
 
-    if(_toolbar)
+    if(t)
     {
-        connect(_toolbar->GetButton("full"), SIGNAL(clicked()), this, SLOT(ReverseFullStatus()));
+        connect(t->GetButton("full"), SIGNAL(clicked()), this, SLOT(ReverseFullStatus()));
+        t->installEventFilter(this);
     }
+    else
+    {
+        if(_toolbar)
+        {
+            _toolbar->removeEventFilter(this);
+        }
+    }
+    _toolbar = t;
 
 }
 
@@ -137,9 +149,29 @@ void MainPanel::changeEvent(QEvent *event)
     }
 }
 
+bool MainPanel::event(QEvent * e)
+{
+    return QWidget::event(e);
+}
+
+bool MainPanel::eventFilter(QObject *obj, QEvent *ev)
+{
+    if(obj == _toolbar ||
+            obj == ui->title ||
+            obj == ui->client ||
+            obj == ui->client->GetScreen())
+    {
+        if(ev->type() == QEvent::MouseButtonPress)
+            _focus->setFocus();
+    }
+    return QWidget::eventFilter(obj, ev);
+}
+
+
 void MainPanel::InitTitle()
 {
     _move->SetMonitor(ui->title);
+    ui->title->installEventFilter(this);
 
     connect(_move, SIGNAL(Offset(QPoint)), this, SLOT(DragMove(QPoint)));
     connect(ui->title->GetButton("close"), SIGNAL(clicked()), this, SLOT(close()));
