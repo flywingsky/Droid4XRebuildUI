@@ -7,3 +7,8 @@ border-width:0 220 0 220;
 
 }
 
+QWidget#line
+{
+background-color:#ffffff;
+border:transparent;
+}

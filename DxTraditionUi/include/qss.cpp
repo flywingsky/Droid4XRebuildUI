@@ -7,7 +7,7 @@ QFile* qssfiles[] = {
     new QFile("://qss/QListWidget.qss"),
     new QFile("://qss/QLineEdit.qss"),
     new QFile(":/qss/qss/ScrollBar.qss"),
-    new QFile(":/qss/qss/QPushButton.qss"),
+    new QFile("://qpushbutton.qss"),
     new QFile(":/qss/qss/QDialog.qss"),
     new QFile(":/qss/QLabel.qss"),
     new QFile(":/qss/QMenu.qss"),

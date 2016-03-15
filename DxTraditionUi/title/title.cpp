@@ -15,6 +15,7 @@ Title::Title(QWidget *parent) :
 
     Qss* qss = new Qss(this);
     qss->AddSheet(Qss::Title);
+    qss->AddSheet(Qss::QPushButton);
     qss->Sync();
 
 }
@@ -31,6 +32,11 @@ QPushButton *Title::GetButton(QString name)
         return _buttons[name];
     }
     return NULL;
+}
+
+void Title::SetMaxStatebtn(bool max)
+{
+    _buttons["max"]->setChecked(max);
 }
 
 

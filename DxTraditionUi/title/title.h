@@ -21,6 +21,8 @@ public:
 
     QPushButton *GetButton(QString name);
 
+    void SetMaxStatebtn(bool max);
+
 signals:
     void DoubleClicked();
     void DragStart();

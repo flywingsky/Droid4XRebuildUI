@@ -2,5 +2,14 @@
     <qresource prefix="/">
         <file alias="title_background">img/title_background.jpg</file>
         <file alias="title.qss">qss/title.qss</file>
+        <file alias="btn_close_hover.png">img/btn_close_hover.png</file>
+        <file alias="btn_close_normal.png">img/btn_close_normal.png</file>
+        <file alias="btn_max_hover.png">img/btn_max_hover.png</file>
+        <file alias="btn_max_normal.png">img/btn_max_normal.png</file>
+        <file alias="btn_min_hover.png">img/btn_min_hover.png</file>
+        <file alias="btn_min_normal.png">img/btn_min_normal.png</file>
+        <file alias="btn_nor_hover.png">img/btn_nor_hover.png</file>
+        <file alias="btn_nor_normal.png">img/btn_nor_normal.png</file>
+        <file alias="qpushbutton.qss">qss/qpushbutton.qss</file>
     </qresource>
 </RCC>

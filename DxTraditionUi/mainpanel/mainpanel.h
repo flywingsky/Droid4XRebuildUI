@@ -32,9 +32,11 @@ public:
 
 
 
+
 public slots:
 
     void ReverseMaxStatus();
+    void ReverseFullStatus();
 
     // 目前是测试用接口，不用的时候要删掉
     void SetLandscape();
@@ -52,6 +54,8 @@ private:
 
     void SetToolbarDockArea(Qt::DockWidgetArea postion);
     void SetWithoutToolbarLayout(Qt::WindowStates ws);
+
+    void ReverseTitleMaxBtn();
 
 
 private slots:

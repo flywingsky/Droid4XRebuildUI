@@ -8,6 +8,7 @@ class QLayout;
 class QWidget;
 class QRect;
 class QGridLayout;
+class QSize;
 
 
 class CommonFunc
@@ -22,6 +23,7 @@ public:
 
     /// @brief 判断是否为横屏
     static bool IsLandscape(QWidget* p);
+    static bool IsLandscape(QSize& s);
 
     typedef QPair<QWidget*, QRect> LayoutItem;
     typedef QList<LayoutItem> LayoutItems;

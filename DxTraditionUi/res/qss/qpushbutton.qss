@@ -1,0 +1,42 @@
+
+QPushButton#btnMax:checked
+{
+border-image: url(://btn_nor_normal.png);
+}
+
+QPushButton#btnMax:checked:hover
+{
+border-image: url(://btn_nor_hover.png);
+}
+
+
+
+QPushButton#btnMax
+{
+border-image: url(://btn_max_normal.png);
+}
+QPushButton#btnMax:hover
+{
+border-image: url(://btn_max_hover.png);
+}
+
+
+QPushButton#btnMin
+{
+border-image: url(://btn_min_normal.png);
+}
+QPushButton#btnMin:hover
+{
+border-image: url(://btn_min_hover.png);
+}
+
+
+
+QPushButton#btnClose
+{
+border-image: url(://btn_close_normal.png);
+}
+QPushButton#btnClose:hover
+{
+border-image: url(://btn_close_hover.png);
+}

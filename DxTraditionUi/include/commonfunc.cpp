@@ -25,7 +25,12 @@ void CommonFunc::SetLayoutSpaceZero(QLayout &layout)
 
 bool CommonFunc::IsLandscape(QWidget *p)
 {
-    return p->width() > p->height();
+    return IsLandscape(p->size());
+}
+
+bool CommonFunc::IsLandscape(QSize &s)
+{
+    return s.width() > s.height();
 }
 
 void CommonFunc::Relayout(CommonFunc::LayoutItems &items, QGridLayout *l)

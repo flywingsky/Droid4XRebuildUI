@@ -11,6 +11,7 @@ ToolBar::ToolBar(QWidget *parent) :
     ui(new Ui::ToolBar)
 {
     ui->setupUi(this);
+    CreateButtons();
 
 }
 
@@ -50,3 +51,22 @@ void ToolBar::resizeEvent(QResizeEvent *event)
     else
         SetPortrait();
 }
+
+
+QPushButton *ToolBar::GetButton(QString name)
+{
+    if(_buttons.contains(name))
+    {
+        return _buttons[name];
+    }
+    return NULL;
+}
+
+
+void ToolBar::CreateButtons()
+{
+    _buttons["full"] = ui->pushButton;
+    _buttons["set"] = ui->pushButton_2;
+    _buttons["help"] = ui->pushButton_3;
+}
+

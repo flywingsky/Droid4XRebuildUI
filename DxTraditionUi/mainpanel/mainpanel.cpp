@@ -51,6 +51,11 @@ void MainPanel::SetToolbar(ToolBar *t)
 {
     _toolbar = t;
 
+    if(_toolbar)
+    {
+        connect(_toolbar->GetButton("full"), SIGNAL(clicked()), this, SLOT(ReverseFullStatus()));
+    }
+
 }
 
 void MainPanel::SetRotate(int r)
@@ -59,6 +64,7 @@ void MainPanel::SetRotate(int r)
     int max = qMax(_resize->Scale().width(),_resize->Scale().height());
 
     bool portrait = bool(r%180);
+    _resize->SetScale(portrait ? QSize(min,max) : QSize(max, min), (QWidget*)ui->client->GetScreen());
 
     if(Qt::WindowNoState == windowState())
     {
@@ -91,6 +97,12 @@ void MainPanel::ReverseMaxStatus()
     setWindowState(isMaximized() ? Qt::WindowNoState : Qt::WindowMaximized);
 }
 
+void MainPanel::ReverseFullStatus()
+{
+    setWindowState(isFullScreen() ? Qt::WindowNoState : Qt::WindowFullScreen);
+    isFullScreen() ? ui->title->hide() : ui->title->show();
+}
+
 
 void MainPanel::resizeEvent(QResizeEvent *event)
 {
@@ -107,13 +119,20 @@ void MainPanel::changeEvent(QEvent *event)
 
     if(event->type() == QEvent::WindowStateChange)
     {
-        bool landscape = CommonFunc::IsLandscape((QWidget*)ui->client->GetScreen());
+        ReverseTitleMaxBtn();
+        bool landscape = CommonFunc::IsLandscape(_resize->Scale());
         SetRotate(landscape ? 0 : 90);
 
         if(Qt::WindowNoState == windowState())
+        {
             layout()->setMargin(3);
+            _resize->SetBorderWidth(3);
+        }
         else
+        {
             layout()->setMargin(0);
+            _resize->SetBorderWidth(0);
+        }
 
     }
 }
@@ -192,6 +211,14 @@ void MainPanel::SetWithoutToolbarLayout(Qt::WindowStates ws)
         break;
     }
     CommonFunc::Relayout(putin, (QGridLayout*)layout());
+}
+
+void MainPanel::ReverseTitleMaxBtn()
+{
+    if(windowState() == Qt::WindowNoState)
+        ui->title->GetButton("max")->setChecked(false);
+    else
+        ui->title->GetButton("max")->setChecked(true);
 }
 
 
