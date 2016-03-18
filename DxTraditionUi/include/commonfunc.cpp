@@ -6,9 +6,12 @@
 
 void CommonFunc::ClearLayout(QLayout *layout)
 {
-    while(layout->count() > 0)
+    if(layout)
     {
-        layout->removeItem(layout->itemAt(0));
+        while(layout->count() > 0)
+        {
+            layout->removeItem(layout->itemAt(0));
+        }
     }
 }
 
@@ -35,9 +38,14 @@ bool CommonFunc::IsLandscape(QSize &s)
 
 void CommonFunc::Relayout(CommonFunc::LayoutItems &items, QGridLayout *l)
 {
+    Relayout(&items, l);
+}
+
+void CommonFunc::Relayout(CommonFunc::LayoutItems *items, QGridLayout *l)
+{
     CommonFunc::ClearLayout(l);
 
-    foreach (LayoutItem item, items) {
+    foreach (LayoutWidget item, *items) {
         l->addWidget(item.first,item.second.x(),item.second.y(),item.second.width(),item.second.height());
     }
 }

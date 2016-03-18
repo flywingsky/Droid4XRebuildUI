@@ -12,5 +12,11 @@
         <file alias="btn_nor_normal.png">img/btn_nor_normal.png</file>
         <file alias="qpushbutton.qss">qss/qpushbutton.qss</file>
         <file alias="toobar_bk.jpg">img/toobar_bk.jpg</file>
+        <file alias="btn_home_hover.png">img/btn_home_hover.png</file>
+        <file alias="btn_home_normal.png">img/btn_home_normal.png</file>
+        <file alias="btn_more_hover.png">img/btn_more_hover.png</file>
+        <file alias="btn_more_normal.png">img/btn_more_normal.png</file>
+        <file alias="btn_return_hover.png">img/btn_return_hover.png</file>
+        <file alias="btn_return_normal.png">img/btn_return_normal.png</file>
     </qresource>
 </RCC>

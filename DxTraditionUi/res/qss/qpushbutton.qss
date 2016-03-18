@@ -40,3 +40,5 @@ QPushButton#btnClose:hover
 {
 border-image: url(://btn_close_hover.png);
 }
+
+

@@ -202,20 +202,20 @@ void MainPanel::SetToolbarDockArea(Qt::DockWidgetArea postion)
     switch(postion)
     {
     case Qt::LeftDockWidgetArea:
-        putin.append(CommonFunc::LayoutItem(ui->title,QRect(0,0,1,2)));
-        putin.append(CommonFunc::LayoutItem(_toolbar,QRect(1,0,1,1)));
-        putin.append(CommonFunc::LayoutItem(ui->client,QRect(1,1,1,1)));
+        putin.append(CommonFunc::LayoutWidget(ui->title,QRect(0,0,1,2)));
+        putin.append(CommonFunc::LayoutWidget(_toolbar,QRect(1,0,1,1)));
+        putin.append(CommonFunc::LayoutWidget(ui->client,QRect(1,1,1,1)));
         _toolbar->SetPortrait();
         break;
     case Qt::BottomDockWidgetArea:
-        putin.append(CommonFunc::LayoutItem(ui->title,QRect(0,0,1,1)));
-        putin.append(CommonFunc::LayoutItem(ui->client,QRect(1,0,1,1)));
-        putin.append(CommonFunc::LayoutItem(_toolbar,QRect(2,0,1,1)));
+        putin.append(CommonFunc::LayoutWidget(ui->title,QRect(0,0,1,1)));
+        putin.append(CommonFunc::LayoutWidget(ui->client,QRect(1,0,1,1)));
+        putin.append(CommonFunc::LayoutWidget(_toolbar,QRect(2,0,1,1)));
         _toolbar->SetLandscape();
         break;
     default:
-        putin.append(CommonFunc::LayoutItem(ui->title,QRect(0,0,1,1)));
-        putin.append(CommonFunc::LayoutItem(ui->client,QRect(1,0,1,1)));
+        putin.append(CommonFunc::LayoutWidget(ui->title,QRect(0,0,1,1)));
+        putin.append(CommonFunc::LayoutWidget(ui->client,QRect(1,0,1,1)));
         break;
 
     }
@@ -231,15 +231,15 @@ void MainPanel::SetWithoutToolbarLayout(Qt::WindowStates ws)
     switch(ws)
     {
     case Qt::WindowFullScreen:
-        putin.append(CommonFunc::LayoutItem(ui->client,QRect(0,0,1,1)));
+        putin.append(CommonFunc::LayoutWidget(ui->client,QRect(0,0,1,1)));
         break;
     case Qt::WindowMaximized:
-        putin.append(CommonFunc::LayoutItem(ui->title,QRect(0,0,1,1)));
-        putin.append(CommonFunc::LayoutItem(ui->client,QRect(1,0,1,1)));
+        putin.append(CommonFunc::LayoutWidget(ui->title,QRect(0,0,1,1)));
+        putin.append(CommonFunc::LayoutWidget(ui->client,QRect(1,0,1,1)));
         break;
     default:
-        putin.append(CommonFunc::LayoutItem(ui->title,QRect(0,0,1,1)));
-        putin.append(CommonFunc::LayoutItem(ui->client,QRect(1,0,1,1)));
+        putin.append(CommonFunc::LayoutWidget(ui->title,QRect(0,0,1,1)));
+        putin.append(CommonFunc::LayoutWidget(ui->client,QRect(1,0,1,1)));
         break;
     }
     CommonFunc::Relayout(putin, (QGridLayout*)layout());

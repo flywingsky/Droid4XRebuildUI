@@ -3,12 +3,16 @@
 
 #include <QWidget>
 #include <QMap>
+#include "commonfunc.h"
 
 namespace Ui {
 class ToolBar;
 }
 
 class QPushButton;
+class QHBoxLayout;
+class QVBoxLayout;
+class QSpacerItem;
 
 class ToolBar : public QWidget
 {
@@ -37,6 +41,8 @@ private slots:
 private:
     Ui::ToolBar *ui;
     QMap<QString, QPushButton*> _buttons;
+    CommonFunc::LayoutItems* _hLayout;
+    CommonFunc::LayoutItems* _vLayout;
 };
 
 #endif // TOOLBAR_H

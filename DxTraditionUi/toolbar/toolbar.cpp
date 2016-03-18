@@ -2,13 +2,17 @@
 #include "ui_toolbar.h"
 
 #include "UIMsgMgr.h"
-#include "commonfunc.h"
 
 #include <QPainter>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QSpacerItem>
 
 ToolBar::ToolBar(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ToolBar)
+    ui(new Ui::ToolBar),
+    _hLayout(new CommonFunc::LayoutItems),
+    _vLayout(new CommonFunc::LayoutItems)
 {
     ui->setupUi(this);
     CreateButtons();
@@ -23,12 +27,21 @@ void ToolBar::SetLandscape()
 {
     setMinimumSize(0,68);
     setMaximumSize(QWIDGETSIZE_MAX,68);
+
+    QGridLayout* l = (QGridLayout*)layout();
+    CommonFunc::Relayout(*_hLayout,l);
+
 }
 
 void ToolBar::SetPortrait()
 {
     setMinimumSize(68,0);
     setMaximumSize(68,QWIDGETSIZE_MAX);
+
+
+    QGridLayout* l = (QGridLayout*)layout();
+    CommonFunc::Relayout(*_vLayout,l);
+
 }
 
 
@@ -52,10 +65,6 @@ void ToolBar::paintEvent(QPaintEvent *event)
 
 void ToolBar::resizeEvent(QResizeEvent *event)
 {
-    if(CommonFunc::IsLandscape(this))
-        SetLandscape();
-    else
-        SetPortrait();
 }
 
 
@@ -71,8 +80,24 @@ QPushButton *ToolBar::GetButton(QString name)
 
 void ToolBar::CreateButtons()
 {
-    _buttons["full"] = ui->pushButton;
-    _buttons["set"] = ui->pushButton_2;
-    _buttons["help"] = ui->pushButton_3;
+    _buttons["back"] = ui->pushButton;
+    _buttons["home"] = ui->pushButton_2;
+    _buttons["more"] = ui->pushButton_3;
+    _buttons["full"] = new QPushButton;
+
+    _vLayout->append(CommonFunc::LayoutWidget(_buttons["full"],QRect(0,0,1,1)));
+    _vLayout->append(CommonFunc::LayoutWidget(ui->spacerWidget,QRect(1,0,1,1)));
+    _vLayout->append(CommonFunc::LayoutWidget(_buttons["back"],QRect(2,0,1,1)));
+    _vLayout->append(CommonFunc::LayoutWidget(_buttons["home"],QRect(3,0,1,1)));
+    _vLayout->append(CommonFunc::LayoutWidget(_buttons["more"],QRect(4,0,1,1)));
+
+    _hLayout->append(CommonFunc::LayoutWidget(_buttons["back"],QRect(0,0,1,1)));
+    _hLayout->append(CommonFunc::LayoutWidget(_buttons["home"],QRect(0,1,1,1)));
+    _hLayout->append(CommonFunc::LayoutWidget(_buttons["more"],QRect(0,2,1,1)));
+    _hLayout->append(CommonFunc::LayoutWidget(ui->spacerWidget,QRect(0,3,1,1)));
+    _hLayout->append(CommonFunc::LayoutWidget(_buttons["full"],QRect(0,4,1,1)));
+
+
+
 }
 

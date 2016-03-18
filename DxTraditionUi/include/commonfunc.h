@@ -25,9 +25,10 @@ public:
     static bool IsLandscape(QWidget* p);
     static bool IsLandscape(QSize& s);
 
-    typedef QPair<QWidget*, QRect> LayoutItem;
-    typedef QList<LayoutItem> LayoutItems;
+    typedef QPair<QWidget*, QRect> LayoutWidget;
+    typedef QList<LayoutWidget> LayoutItems;
     static void Relayout(LayoutItems &items, QGridLayout* l);
+    static void Relayout(LayoutItems* items, QGridLayout* l);
 };
 
 #endif // COMMONFUNC_H
