@@ -57,6 +57,8 @@ void MainPanel::SetToolbar(ToolBar *t)
     if(t)
     {
         connect(t->GetButton("full"), SIGNAL(clicked()), this, SLOT(ReverseFullStatus()));
+        connect(t->GetButton("home"), SIGNAL(clicked()), this, SLOT(SetLandscape()));
+        connect(t->GetButton("more"), SIGNAL(clicked()), this, SLOT(SetPortrait()));
         t->installEventFilter(this);
     }
     else
@@ -82,6 +84,7 @@ void MainPanel::SetRotate(int r)
     {
         ui->client->SetScale(QSize());
         SetToolbarDockArea(portrait ? Qt::LeftDockWidgetArea : Qt::BottomDockWidgetArea);
+
         setGeometry(portrait ? _normalPortrait : _normalLandscape);
     }
     else
@@ -114,7 +117,6 @@ void MainPanel::ReverseFullStatus()
     setWindowState(isFullScreen() ? Qt::WindowNoState : Qt::WindowFullScreen);
     isFullScreen() ? ui->title->hide() : ui->title->show();
 }
-
 
 void MainPanel::resizeEvent(QResizeEvent *event)
 {
@@ -279,8 +281,14 @@ void MainPanel::RecodeNormalSize()
     if(windowState() == Qt::WindowNoState)
     {
         if(CommonFunc::IsLandscape((QWidget*)ui->client->GetScreen()))
-            _normalLandscape = geometry();
+        {
+            if(CommonFunc::IsLandscape(size()))
+                _normalLandscape = geometry();
+        }
         else
-            _normalPortrait = geometry();
+        {
+            if(!CommonFunc::IsLandscape(size()))
+                _normalPortrait = geometry();
+        }
     }
 }
