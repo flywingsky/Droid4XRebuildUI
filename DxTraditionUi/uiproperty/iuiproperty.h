@@ -10,12 +10,24 @@ public:
     virtual WId ScreenId() const = 0;
 
     virtual QSize PanelSize() const = 0;
-    virtual QSize SetPanelSize(QSize s) = 0;
+    virtual void SetPanelSize(QSize s) = 0;
 
     virtual QPoint PanelPos() const = 0;
     virtual void setPanelPos(QPoint p) = 0;
 
     virtual QSize ScreenSize() const = 0;
+
+    // 设置screen等比缩放的一个比例。忽略横竖屏，只需要一个比例
+    virtual QSize Scale() const = 0;
+    virtual void SetScale(QSize v) = 0;
+
+    // 显示和隐藏主窗口 类似 show() hide()
+    virtual void SetVisible(bool visible) = 0;
+    virtual bool Visible() const = 0;
+
+    // 设置旋转度
+    virtual void SetRotation(int r) = 0;
+
 
 };
 

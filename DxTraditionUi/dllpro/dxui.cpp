@@ -20,15 +20,10 @@ void DxUi::CreateMainWnd()
 {
     Q_D(DxUi);
     d->_mainPanel = new MainPanel();
-    d->_mainPanel->show();
-    d->_mainPanel->SetScale(QSize(10,5));
-
     d->_toolbar = new ToolBar(d->_mainPanel);
-    d->_toolbar->show();
-
     d->_mainPanel->SetToolbar(d->_toolbar);
-    d->_mainPanel->SetRotate(0);
 }
+
 
 IUiProperty *DxUi::GetProperty() const
 {

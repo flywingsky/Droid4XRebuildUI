@@ -10,6 +10,7 @@
 #include "commonfunc.h"
 #include "toolbar.h"
 #include "screen.h"
+#include <QApplication>
 
 MainPanel::MainPanel(QWidget *parent) :
     QDialog(parent),
@@ -18,8 +19,8 @@ MainPanel::MainPanel(QWidget *parent) :
     _resize(new FramelessResize),
     _focus(NULL),
     _toolbar(NULL),
-    _normalLandscape(QRect(100,100,1178,688)),
-    _normalPortrait(100,100,447,780)
+    _normalLandscape(QRect(100,100,901,605)),
+    _normalPortrait(100,100,453,707)
 {
     ui->setupUi(this);
     FramelessMove::SetFrameLess(true, this);
@@ -48,7 +49,18 @@ Screen *MainPanel::GetScreen() const
 void MainPanel::SetScale(QSize s)
 {
     Q_ASSERT(_resize);
+//    int max = qMax(s.width(),s.height());
+//    int min = qMin(s.width(), s.height());
+
+//    _normalLandscape.setSize(FramelessResize::ChangeRatioAdjust(QSize(max,min),_normalLandscape.size(),ui->client->size()));
+//    _normalPortrait.setSize(FramelessResize::ChangeRatioAdjust(QSize(min,max),_normalPortrait.size(),ui->client->size()));
     _resize->SetScale(s,ui->client);
+}
+
+QSize MainPanel::Scale() const
+{
+    Q_ASSERT(_resize);
+    return _resize->Scale();
 }
 
 void MainPanel::SetToolbar(ToolBar *t)
@@ -253,6 +265,24 @@ void MainPanel::ReverseTitleMaxBtn()
         ui->title->GetButton("max")->setChecked(false);
     else
         ui->title->GetButton("max")->setChecked(true);
+}
+
+void MainPanel::InitNormalSize(bool landscape)
+{
+    const QMargins m(200,200,-200,-200);
+    if(landscape)
+    {
+        if(_normalLandscape.isEmpty())
+        {
+//            QRect temp = qApp->primaryScreen() + m;
+//            QSize screen = _resize->Scale().scaled(temp.size(),Qt::KeepAspectRatio);
+
+        }
+    }
+    else
+    {
+
+    }
 }
 
 

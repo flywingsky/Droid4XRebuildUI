@@ -160,7 +160,19 @@ IMsgMgr* CUIMsgMgr::GetMsgMgr()
 	{
         m_pInstance = new CUIMsgMgr();
 	}
-	return (IMsgMgr*)m_pInstance;
+    return (IMsgMgr*)m_pInstance;
+}
+
+long CUIMsgMgr::Send(unsigned int auMsgID, void *apWParam, void *apLParam)
+{
+    IMsgMgr* msg = CUIMsgMgr::GetMsgMgr();
+    return msg->SendMsg(auMsgID,apWParam,apLParam);
+}
+
+void CUIMsgMgr::Post(unsigned int auMsgID, void *apWParam, void *apLParam)
+{
+    IMsgMgr* msg = CUIMsgMgr::GetMsgMgr();
+    msg->PostMsg(auMsgID,apWParam,apLParam);
 }
 
 //发送消息

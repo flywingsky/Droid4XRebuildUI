@@ -13,61 +13,68 @@ DxUiPrivate::DxUiPrivate(DxUi *q) :
 
 WId DxUiPrivate::ScreenId() const
 {
-    if(_mainPanel)
-    {
-        return _mainPanel->GetScreen()->winId();
-    }
-
-    return NULL;
+    return _mainPanel->GetScreen()->winId();
 }
 
 
 QSize DxUiPrivate::PanelSize() const
 {
-    if(_mainPanel)
-    {
-        return _mainPanel->size();
-    }
-
-    return QSize();
+    return _mainPanel->size();
 }
 
-QSize DxUiPrivate::SetPanelSize(QSize s)
+void DxUiPrivate::SetPanelSize(QSize s)
 {
-    if(_mainPanel)
-    {
-        _mainPanel->resize(s);
-        return _mainPanel->size();
-    }
-
-    return QSize();
+    _mainPanel->resize(s);
 }
 
 QPoint DxUiPrivate::PanelPos() const
 {
-    if(_mainPanel)
-    {
-        return _mainPanel->pos();
-    }
-
-    return QPoint();
-
+    return _mainPanel->pos();
 }
 
 void DxUiPrivate::setPanelPos(QPoint p)
 {
-    if(_mainPanel)
-    {
-        _mainPanel->move(p);
-    }
+    _mainPanel->move(p);
 }
 
 QSize DxUiPrivate::ScreenSize() const
 {
-    if(_mainPanel)
-    {
-        return _mainPanel->GetScreen()->size();
-    }
+    return _mainPanel->GetScreen()->size();
+}
 
-    return QSize();
+QSize DxUiPrivate::Scale() const
+{
+    return _mainPanel->Scale();
+}
+
+void DxUiPrivate::SetScale(QSize v)
+{
+    QSize temp;
+    // 忽略旋转因素, 根据当前已经设置的横竖，来设置新的比例的横竖
+    if(!_mainPanel->Scale().isEmpty())
+    {
+        if(_mainPanel->Scale().width() >= _mainPanel->Scale().height())
+            temp = (v.width() > v.height()) ? v : QSize(v.height(),v.width());
+        else
+            temp = (v.width() < v.height()) ? v : QSize(v.height(),v.width());
+    }
+    else
+        temp = v;
+
+    _mainPanel->SetScale(temp);
+}
+
+void DxUiPrivate::SetVisible(bool visible)
+{
+    _mainPanel->setVisible(visible);
+}
+
+bool DxUiPrivate::Visible() const
+{
+    return !_mainPanel->isHidden();
+}
+
+void DxUiPrivate::SetRotation(int r)
+{
+    _mainPanel->SetRotate(r);
 }

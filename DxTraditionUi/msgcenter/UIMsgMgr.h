@@ -34,7 +34,10 @@ class CUIMsgMgr :
 {
 public:
 	static IMsgMgr* GetMsgMgr();
-	
+
+    static long Send(unsigned int auMsgID,void *apWParam,void *apLParam);
+    static void Post(unsigned int auMsgID,void *apWParam,void *apLParam);
+
 public:
 	
 	~CUIMsgMgr(void);

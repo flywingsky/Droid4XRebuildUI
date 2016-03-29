@@ -25,6 +25,7 @@ public:
 
     // 固定尺寸拖拽的比例。值无所谓，重要的是w/h。如果其中之一为0，则自由拖拽
     void SetScale(QSize s);
+    QSize Scale() const;
 
     void SetToolbar(ToolBar *t);
 
@@ -58,6 +59,9 @@ private:
     void SetWithoutToolbarLayout(Qt::WindowStates ws);
 
     void ReverseTitleMaxBtn();
+
+    // 初始化默认尺寸
+    void InitNormalSize(bool landscape);
 
 
 private slots:

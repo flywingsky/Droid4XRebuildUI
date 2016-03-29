@@ -24,6 +24,7 @@ public:
     };
 
     static QMargins FixRatioTransform(const QMargins &g, const QSize &scale, const QWidget *parent, const QWidget *elastic);
+    static QSize ChangeRatioAdjust(const QSize& ratio, const QSize& parent, const QSize& byScale);
 
 public:
     explicit FramelessResize(QObject *parent = 0);

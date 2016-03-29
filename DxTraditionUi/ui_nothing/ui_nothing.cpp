@@ -29,6 +29,9 @@ void ui_nothing::Run()
 
     _ui->CreateMainWnd();
     _test->RegisterMsg(_msgMgr);
+    _uiProperty->SetRotation(0);
+    _uiProperty->SetScale(QSize(1280,720));
+    _uiProperty->SetVisible(true);
 
 
 

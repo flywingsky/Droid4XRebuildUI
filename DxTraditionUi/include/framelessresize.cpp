@@ -184,3 +184,10 @@ QMargins FramelessResize::FixRatioTransform(const QMargins &g, const QSize& scal
 
 }
 
+QSize FramelessResize::ChangeRatioAdjust(const QSize &ratio, const QSize &parent, const QSize &byScale)
+{
+    QSize frame = parent - byScale;
+    QSize ret = ratio.scaled(byScale,Qt::KeepAspectRatio);
+    return ret + frame;
+}
+
