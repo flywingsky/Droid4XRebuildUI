@@ -16,6 +16,12 @@ void MsgTest::RegisterMsg(IMsgMgr *obj)
     obj->RegMsg(InOut::MouseMove, this, true);
     obj->RegMsg(InOut::StringInput, this, true);
     obj->RegMsg(InOut::KeyDown, this, true);
+    obj->RegMsg(Btn::Back, this, true);
+    obj->RegMsg(Btn::Home, this, true);
+    obj->RegMsg(Btn::More, this, true);
+    obj->RegMsg(Btn::Full, this, true);
+    obj->RegMsg(Btn::Shake, this, true);
+    obj->RegMsg(Btn::Shot, this, true);
 }
 
 unsigned long MsgTest::Notify(unsigned int id, void *wparam, void *lparam)
@@ -50,6 +56,11 @@ unsigned long MsgTest::Notify(unsigned int id, void *wparam, void *lparam)
     {
         QString* s = (QString*)wparam;
         qDebug() << "StringInput" << *s;
+        break;
+    }
+    case Btn::Back:
+    {
+        qDebug() << "back";
         break;
     }
     default:

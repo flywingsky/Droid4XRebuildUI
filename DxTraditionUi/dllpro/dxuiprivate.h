@@ -43,6 +43,9 @@ public:
     virtual void SetVisible(bool visible);
     virtual bool Visible() const;
 
+    // 调整主窗口，会根据比例调整，以及放置到屏幕中间
+    virtual void Adjust() const;
+
     // 设置旋转度
     virtual void SetRotation(int r);
 

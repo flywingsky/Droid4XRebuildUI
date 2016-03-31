@@ -2,6 +2,7 @@
 #include "ui_toolbar.h"
 
 #include "UIMsgMgr.h"
+#include "msgdef.h"
 
 #include <QPainter>
 #include <QHBoxLayout>
@@ -72,7 +73,7 @@ QPushButton *ToolBar::GetButton(QString name)
 {
     if(_buttons.contains(name))
     {
-        return _buttons[name];
+        return qobject_cast<QPushButton*>(_buttons[name]);
     }
     return NULL;
 }
@@ -83,21 +84,50 @@ void ToolBar::CreateButtons()
     _buttons["back"] = ui->pushButton;
     _buttons["home"] = ui->pushButton_2;
     _buttons["more"] = ui->pushButton_3;
-    _buttons["full"] = new QPushButton;
+    _buttons["blank"] = ui->spacerWidget;
+    _buttons["full"] = new QPushButton(this);
+    _buttons["shake"] = new QPushButton(this);
+    _buttons["shot"] = new QPushButton(this);
 
-    _vLayout->append(CommonFunc::LayoutWidget(_buttons["full"],QRect(0,0,1,1)));
-    _vLayout->append(CommonFunc::LayoutWidget(ui->spacerWidget,QRect(1,0,1,1)));
-    _vLayout->append(CommonFunc::LayoutWidget(_buttons["back"],QRect(2,0,1,1)));
-    _vLayout->append(CommonFunc::LayoutWidget(_buttons["home"],QRect(3,0,1,1)));
-    _vLayout->append(CommonFunc::LayoutWidget(_buttons["more"],QRect(4,0,1,1)));
+    static QString vOrder[] = {"full", "shake", "shot", "blank", "back", "home", "more"};
+    static QString hOrder[] = {"back", "home", "more","blank", "full", "shake", "shot"};
 
-    _hLayout->append(CommonFunc::LayoutWidget(_buttons["back"],QRect(0,0,1,1)));
-    _hLayout->append(CommonFunc::LayoutWidget(_buttons["home"],QRect(0,1,1,1)));
-    _hLayout->append(CommonFunc::LayoutWidget(_buttons["more"],QRect(0,2,1,1)));
-    _hLayout->append(CommonFunc::LayoutWidget(ui->spacerWidget,QRect(0,3,1,1)));
-    _hLayout->append(CommonFunc::LayoutWidget(_buttons["full"],QRect(0,4,1,1)));
+    for(int n=0; n<_buttons.size(); ++n)
+    {
+        _vLayout->append(CommonFunc::LayoutWidget(_buttons[vOrder[n]],QRect(n,0,1,1)));
+        _hLayout->append(CommonFunc::LayoutWidget(_buttons[hOrder[n]],QRect(0,n,1,1)));
+
+        QPushButton* btn = qobject_cast<QPushButton*>(_buttons.values()[n]);
+        if(btn)
+            connect(btn, SIGNAL(clicked()), this, SLOT(ButtonClicked()));
+
+    }
 
 
+
+
+}
+
+void ToolBar::ButtonClicked()
+{
+    QPushButton* btn = qobject_cast<QPushButton*>(sender());
+    QString key;
+    if(btn)
+        key = _buttons.key(btn);
+
+
+    static QMap<QString, int> msg;
+    if(msg.isEmpty())
+    {
+        msg["back"] = Btn::Back;
+        msg["home"] = Btn::Home;
+        msg["more"] = Btn::More;
+        msg["full"] = Btn::Full;
+        msg["shake"] = Btn::Shake;
+        msg["shot"] = Btn::Shot;
+    }
+
+    CUIMsgMgr::Post(msg[key],NULL,NULL);
 
 }
 

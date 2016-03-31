@@ -49,29 +49,23 @@ QSize DxUiPrivate::Scale() const
 
 void DxUiPrivate::SetScale(QSize v)
 {
-    QSize temp;
-    // 忽略旋转因素, 根据当前已经设置的横竖，来设置新的比例的横竖
-    if(!_mainPanel->Scale().isEmpty())
-    {
-        if(_mainPanel->Scale().width() >= _mainPanel->Scale().height())
-            temp = (v.width() > v.height()) ? v : QSize(v.height(),v.width());
-        else
-            temp = (v.width() < v.height()) ? v : QSize(v.height(),v.width());
-    }
-    else
-        temp = v;
-
-    _mainPanel->SetScale(temp);
+    _mainPanel->SetScale(v);
 }
 
 void DxUiPrivate::SetVisible(bool visible)
 {
     _mainPanel->setVisible(visible);
+    _mainPanel->Rescale();
 }
 
 bool DxUiPrivate::Visible() const
 {
     return !_mainPanel->isHidden();
+}
+
+void DxUiPrivate::Adjust() const
+{
+    _mainPanel->Adjust();
 }
 
 void DxUiPrivate::SetRotation(int r)

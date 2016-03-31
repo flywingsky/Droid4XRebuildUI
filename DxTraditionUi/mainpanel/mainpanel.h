@@ -31,6 +31,10 @@ public:
 
     void SetRotate(int r);
 
+    void Adjust();
+
+    void Rescale();
+
 
 
 
@@ -50,6 +54,8 @@ protected:
     virtual void	changeEvent(QEvent * event);
     bool event(QEvent *e);
     bool eventFilter(QObject *obj, QEvent *ev);
+    virtual void	closeEvent(QCloseEvent * event);
+
 private:
     void InitTitle();
     void InitFocusWidget();
@@ -61,7 +67,7 @@ private:
     void ReverseTitleMaxBtn();
 
     // 初始化默认尺寸
-    void InitNormalSize(bool landscape);
+    void InitNormalSize(bool Portrait, QSize scale);
 
 
 private slots:
@@ -76,6 +82,8 @@ private:
     ToolBar* _toolbar;
     QRect _normalLandscape;
     QRect _normalPortrait;
+    int _rotate;
+    QSize _scale;
 
 };
 

@@ -32,6 +32,7 @@ void ui_nothing::Run()
     _uiProperty->SetRotation(0);
     _uiProperty->SetScale(QSize(1280,720));
     _uiProperty->SetVisible(true);
+    _uiProperty->Adjust();
 
 
 

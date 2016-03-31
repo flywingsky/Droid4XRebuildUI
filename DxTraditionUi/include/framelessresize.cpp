@@ -51,6 +51,16 @@ QSize FramelessResize::Scale() const
     return _scale;
 }
 
+void FramelessResize::Adjust()
+{
+    if(_elastic && !_elastic->size().isEmpty() && !_scale.isEmpty())
+    {
+        qDebug() << qAbs((qreal)_elastic->width() / _elastic->height() - (qreal)_scale.width() / _scale.height());
+        if( qAbs((qreal)_elastic->width() / _elastic->height() - (qreal)_scale.width() / _scale.height()) > 0.03 )
+            Adjust(QMargins(0,0,0,0));
+    }
+}
+
 bool FramelessResize::eventFilter(QObject *obj, QEvent *ev)
 {
     if(obj == _monitor)
@@ -137,19 +147,22 @@ void FramelessResize::DragResize(QEvent *ev)
         offset.setBottom((e->pos() - e->oldPos() ).y());
 
     if(!offset.isNull())
-    {
-        offset = FixRatioTransform(offset,_scale, _monitor, _elastic);
-        emit OffsetGeometry(offset);
+        Adjust(offset);
+}
 
-        if(_target)
-            _target->setGeometry(_target->geometry() + offset);
-    }
+void FramelessResize::Adjust(QMargins offset)
+{
+    offset = FixRatioTransform(offset,_scale, _monitor, _elastic);
+    emit OffsetGeometry(offset);
+
+    if(_target)
+        _target->setGeometry(_target->geometry() + offset);
 }
 
 
 QMargins FramelessResize::FixRatioTransform(const QMargins &g, const QSize& scale, const QWidget* parent, const QWidget* elastic)
 {
-    if(elastic == NULL || parent == NULL || g.isNull() || scale.isNull())
+    if(elastic == NULL || parent == NULL || scale.isNull())
         return g;
 
     QSize fix = parent->size() - elastic->size();

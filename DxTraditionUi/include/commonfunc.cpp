@@ -2,6 +2,8 @@
 
 #include <QLayout>
 #include <QWidget>
+#include <QGuiApplication>
+#include <QScreen>
 
 
 void CommonFunc::ClearLayout(QLayout *layout)
@@ -48,4 +50,17 @@ void CommonFunc::Relayout(CommonFunc::LayoutItems *items, QGridLayout *l)
     foreach (LayoutWidget item, *items) {
         l->addWidget(item.first,item.second.x(),item.second.y(),item.second.width(),item.second.height());
     }
+}
+
+QRect CommonFunc::PrimaryScreenGeometry()
+{
+    return qApp->primaryScreen()->geometry();
+}
+
+QRect CommonFunc::CenterRect(QRect parent, QSize center)
+{
+    QSize inc = (parent.size() - center) / 2;
+    QPoint pos = QPoint(inc.width(),inc.height()) + parent.topLeft();
+
+    return QRect(pos,center);
 }

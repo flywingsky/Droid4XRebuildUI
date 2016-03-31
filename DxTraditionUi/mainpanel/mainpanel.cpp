@@ -11,6 +11,9 @@
 #include "toolbar.h"
 #include "screen.h"
 #include <QApplication>
+#include <QResizeEvent>
+#include "UIMsgMgr.h"
+#include "msgdef.h"
 
 MainPanel::MainPanel(QWidget *parent) :
     QDialog(parent),
@@ -19,14 +22,17 @@ MainPanel::MainPanel(QWidget *parent) :
     _resize(new FramelessResize),
     _focus(NULL),
     _toolbar(NULL),
-    _normalLandscape(QRect(100,100,901,605)),
-    _normalPortrait(100,100,453,707)
+    _rotate(0)
+//    _normalLandscape(QRect(100,100,1000,1000)),
+//    _normalPortrait(100,100,453,707)
 {
     ui->setupUi(this);
+
     FramelessMove::SetFrameLess(true, this);
     _resize->SetMonitor(this);
     _resize->SetTarget(this);
     _resize->SetBorderWidth(layout()->margin());
+
     InitTitle();
     InitFocusWidget();
     installEventFilter(this);
@@ -48,13 +54,9 @@ Screen *MainPanel::GetScreen() const
 
 void MainPanel::SetScale(QSize s)
 {
-    Q_ASSERT(_resize);
-//    int max = qMax(s.width(),s.height());
-//    int min = qMin(s.width(), s.height());
-
-//    _normalLandscape.setSize(FramelessResize::ChangeRatioAdjust(QSize(max,min),_normalLandscape.size(),ui->client->size()));
-//    _normalPortrait.setSize(FramelessResize::ChangeRatioAdjust(QSize(min,max),_normalPortrait.size(),ui->client->size()));
-    _resize->SetScale(s,ui->client);
+    _scale = s;
+//    Q_ASSERT(_resize);
+//    _resize->SetScale(s,ui->client);
 }
 
 QSize MainPanel::Scale() const
@@ -69,8 +71,6 @@ void MainPanel::SetToolbar(ToolBar *t)
     if(t)
     {
         connect(t->GetButton("full"), SIGNAL(clicked()), this, SLOT(ReverseFullStatus()));
-        connect(t->GetButton("home"), SIGNAL(clicked()), this, SLOT(SetLandscape()));
-        connect(t->GetButton("more"), SIGNAL(clicked()), this, SLOT(SetPortrait()));
         t->installEventFilter(this);
     }
     else
@@ -86,34 +86,60 @@ void MainPanel::SetToolbar(ToolBar *t)
 
 void MainPanel::SetRotate(int r)
 {
-    int min = qMin(_resize->Scale().width(),_resize->Scale().height());
-    int max = qMax(_resize->Scale().width(),_resize->Scale().height());
+    _rotate = r;
+}
 
-    bool portrait = bool(r%180);
-    _resize->SetScale(portrait ? QSize(min,max) : QSize(max, min), (QWidget*)ui->client->GetScreen());
+void MainPanel::Adjust()
+{
+    _resize->Adjust();
+    QApplication::processEvents();
+    setGeometry( CommonFunc::CenterRect(CommonFunc::PrimaryScreenGeometry(), size()));
+}
+
+void MainPanel::Rescale()
+{
+    int min = qMin(_scale.width(),_scale.height());
+    int max = qMax(_scale.width(),_scale.height());
+
+    bool portrait = bool(_rotate%180);
+
+    qDebug() << max << min;
 
     if(Qt::WindowNoState == windowState())
     {
+        _resize->SetScale(portrait ? QSize(min,max) : QSize(max, min), (QWidget*)ui->client);
+
+        ui->client->SetScale(portrait ? QSize(min,max) : QSize(max, min));
         ui->client->SetScale(QSize());
         SetToolbarDockArea(portrait ? Qt::LeftDockWidgetArea : Qt::BottomDockWidgetArea);
+
+        if(_normalLandscape.isEmpty() || _normalPortrait.isEmpty())
+            InitNormalSize(portrait, portrait ? QSize(min,max) : QSize(max, min));
+
+        qDebug() << _normalLandscape << _normalPortrait;
 
         setGeometry(portrait ? _normalPortrait : _normalLandscape);
     }
     else
     {
+        _resize->SetScale(portrait ? QSize(min,max) : QSize(max, min), (QWidget*)ui->client->GetScreen());
+
         ui->client->SetScale(portrait ? QSize(min,max) : QSize(max, min));
         SetWithoutToolbarLayout(windowState());
     }
+
 }
 
 void MainPanel::SetLandscape()
 {
     SetRotate(0);
+    Rescale();
 }
 
 void MainPanel::SetPortrait()
 {
     SetRotate(90);
+    Rescale();
 
 }
 
@@ -132,6 +158,7 @@ void MainPanel::ReverseFullStatus()
 
 void MainPanel::resizeEvent(QResizeEvent *event)
 {
+
     RecodeNormalSize();
 }
 
@@ -146,8 +173,8 @@ void MainPanel::changeEvent(QEvent *event)
     if(event->type() == QEvent::WindowStateChange)
     {
         ReverseTitleMaxBtn();
-        bool landscape = CommonFunc::IsLandscape(_resize->Scale());
-        SetRotate(landscape ? 0 : 90);
+        Rescale();
+
 
         if(Qt::WindowNoState == windowState())
         {
@@ -179,6 +206,12 @@ bool MainPanel::eventFilter(QObject *obj, QEvent *ev)
             _focus->setFocus();
     }
     return QWidget::eventFilter(obj, ev);
+}
+
+void MainPanel::closeEvent(QCloseEvent *event)
+{
+    CUIMsgMgr::Post(State::Close,NULL,NULL);
+    QDialog::closeEvent(event);
 }
 
 
@@ -267,22 +300,30 @@ void MainPanel::ReverseTitleMaxBtn()
         ui->title->GetButton("max")->setChecked(true);
 }
 
-void MainPanel::InitNormalSize(bool landscape)
+void MainPanel::InitNormalSize(bool Portrait, QSize scale)
 {
-    const QMargins m(200,200,-200,-200);
-    if(landscape)
-    {
-        if(_normalLandscape.isEmpty())
-        {
-//            QRect temp = qApp->primaryScreen() + m;
-//            QSize screen = _resize->Scale().scaled(temp.size(),Qt::KeepAspectRatio);
+    const int screenFrame = 300;
+    QRect screen = CommonFunc::PrimaryScreenGeometry();
+    QSize t = screen.size() - QSize(screenFrame,screenFrame);
+    int max = qMax(t.width(),t.height());
+    int min = qMin(t.width(), t.height());
 
-        }
+    QApplication::processEvents();
+    QSize fix = size() - ui->client->size();
+    if(Portrait)
+    {
+        QSize temp = CommonFunc::CenterRect(screen, QSize(min, max).scaled(t, Qt::KeepAspectRatio)).size();
+        temp = fix + scale.scaled(temp,Qt::KeepAspectRatioByExpanding);
+        _normalPortrait = CommonFunc::CenterRect(screen,temp);
     }
     else
     {
-
+        QSize temp = CommonFunc::CenterRect(screen, QSize(max,min).scaled(t, Qt::KeepAspectRatio)).size();
+        temp = fix + scale.scaled(temp,Qt::KeepAspectRatioByExpanding);
+        _normalLandscape = CommonFunc::CenterRect(screen, temp);
     }
+
+
 }
 
 

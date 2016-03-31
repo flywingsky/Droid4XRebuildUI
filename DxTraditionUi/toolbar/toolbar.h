@@ -35,12 +35,13 @@ private:
 
 
 private slots:
+    void ButtonClicked();
 
 
 
 private:
     Ui::ToolBar *ui;
-    QMap<QString, QPushButton*> _buttons;
+    QMap<QString, QWidget*> _buttons;
     CommonFunc::LayoutItems* _hLayout;
     CommonFunc::LayoutItems* _vLayout;
 };

@@ -6,7 +6,9 @@ namespace MsgType {
     enum
     {
         Msg_Geometry = 0x0100,
-        Msg_InOut = 0x0200
+        Msg_InOut = 0x0200,
+        Msg_Btn = 0x0300,
+        Msg_State = 0x0400
     };
 
 }
@@ -27,8 +29,31 @@ namespace InOut
         MousePress,
         MouseRelease,
         MouseMove,
-        KeyDown
+        KeyDown,
+        KeyUp
     };
+}
+
+namespace Btn {
+    enum
+    {
+        Back = MsgType::Msg_Btn + 1,
+        Home,
+        More,
+        Full,
+        Shake,
+        Shot
+    };
+
+}
+
+namespace State {
+    enum
+    {
+        Close = MsgType::Msg_State + 1
+
+    };
+
 }
 
 

@@ -41,11 +41,18 @@ void FocusWidget::paintEvent(QPaintEvent *event)
 void FocusWidget::keyPressEvent(QKeyEvent *event)
 {
     IMsgMgr* msg = CUIMsgMgr::GetMsgMgr();
-    static long vk;
+    static int vk;
     vk = event->nativeVirtualKey();
     qDebug() << "keyPressEvent" << vk;
 
     msg->PostMsg(InOut::KeyDown, &vk,event);
+}
+
+void FocusWidget::keyReleaseEvent(QKeyEvent *event)
+{
+    static int vk;
+    vk = event->nativeVirtualKey();
+    CUIMsgMgr::Post(InOut::KeyUp,&vk,event);
 }
 
 

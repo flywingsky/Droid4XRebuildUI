@@ -29,6 +29,10 @@ public:
     typedef QList<LayoutWidget> LayoutItems;
     static void Relayout(LayoutItems &items, QGridLayout* l);
     static void Relayout(LayoutItems* items, QGridLayout* l);
+
+    /// @brief 获得窗口所在屏幕的尺寸
+    static QRect PrimaryScreenGeometry();
+    static QRect CenterRect(QRect parent, QSize center);
 };
 
 #endif // COMMONFUNC_H

@@ -39,6 +39,8 @@ public:
     void SetScale(QSize s,  QWidget* elastic);
     QSize Scale() const;
 
+    void Adjust();
+
 
 
 signals:
@@ -53,6 +55,7 @@ private:
     int GetDirection(const QPoint pt) const;
     void SetCursor(int direction);
     void DragResize(QEvent* ev);
+    void Adjust(QMargins offset);
 
 
 private:
