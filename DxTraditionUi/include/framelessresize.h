@@ -39,7 +39,6 @@ public:
     void SetScale(QSize s,  QWidget* elastic);
     QSize Scale() const;
 
-    void Adjust();
 
 
 

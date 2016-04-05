@@ -42,3 +42,15 @@ border-image: url(://btn_close_hover.png);
 }
 
 
+QPushButton#btnFull
+{
+
+border-image: url(://btn_full_normal.png);
+}
+QPushButton#btnFull:hover
+{
+background-color:rgb(234,52,41);
+border-image: url(://btn_full_hover.png);
+}
+
+

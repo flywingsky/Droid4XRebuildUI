@@ -31,8 +31,6 @@ public:
 
     void SetRotate(int r);
 
-    void Adjust();
-
     void Rescale();
 
 
@@ -80,8 +78,9 @@ private:
     FramelessResize* _resize;
     FocusWidget* _focus;
     ToolBar* _toolbar;
-    QRect _normalLandscape;
-    QRect _normalPortrait;
+    QSize* _normalLandscape;
+    QSize* _normalPortrait;
+    QPoint* _normalPos;
     int _rotate;
     QSize _scale;
 

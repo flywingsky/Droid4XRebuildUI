@@ -23,6 +23,9 @@ public:
     };
 
 public:
+    static QString StyleSheet(int type);
+
+
     explicit Qss(QObject *parent);
 
     void AddSheet(int type, bool cover = false);
@@ -36,7 +39,7 @@ signals:
 public slots:
 
 private:
-    QString StyleSheet(int type) const;
+
 
 private:
     QWidget* _p;

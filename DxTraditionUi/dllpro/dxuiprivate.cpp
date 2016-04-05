@@ -54,8 +54,10 @@ void DxUiPrivate::SetScale(QSize v)
 
 void DxUiPrivate::SetVisible(bool visible)
 {
+
     _mainPanel->setVisible(visible);
-    _mainPanel->Rescale();
+
+
 }
 
 bool DxUiPrivate::Visible() const
@@ -65,7 +67,7 @@ bool DxUiPrivate::Visible() const
 
 void DxUiPrivate::Adjust() const
 {
-    _mainPanel->Adjust();
+    _mainPanel->Rescale();
 }
 
 void DxUiPrivate::SetRotation(int r)

@@ -5,6 +5,9 @@
 
 #include "dxuiprivate.h"
 
+#include <QFile>
+#include <QDebug>
+
 DxUi::DxUi() :
     d_ptr(new DxUiPrivate(this))
 {

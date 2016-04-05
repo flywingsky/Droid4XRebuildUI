@@ -22,7 +22,11 @@ MainPanel::MainPanel(QWidget *parent) :
     _resize(new FramelessResize),
     _focus(NULL),
     _toolbar(NULL),
+    _normalLandscape(NULL),
+    _normalPortrait(NULL),
+    _normalPos(NULL),
     _rotate(0)
+
 //    _normalLandscape(QRect(100,100,1000,1000)),
 //    _normalPortrait(100,100,453,707)
 {
@@ -89,12 +93,6 @@ void MainPanel::SetRotate(int r)
     _rotate = r;
 }
 
-void MainPanel::Adjust()
-{
-    _resize->Adjust();
-    QApplication::processEvents();
-    setGeometry( CommonFunc::CenterRect(CommonFunc::PrimaryScreenGeometry(), size()));
-}
 
 void MainPanel::Rescale()
 {
@@ -105,6 +103,8 @@ void MainPanel::Rescale()
 
     qDebug() << max << min;
 
+    _toolbar->StopAutoFloat();
+
     if(Qt::WindowNoState == windowState())
     {
         _resize->SetScale(portrait ? QSize(min,max) : QSize(max, min), (QWidget*)ui->client);
@@ -113,19 +113,26 @@ void MainPanel::Rescale()
         ui->client->SetScale(QSize());
         SetToolbarDockArea(portrait ? Qt::LeftDockWidgetArea : Qt::BottomDockWidgetArea);
 
-        if(_normalLandscape.isEmpty() || _normalPortrait.isEmpty())
-            InitNormalSize(portrait, portrait ? QSize(min,max) : QSize(max, min));
+        if(portrait && !_normalPortrait)
+            InitNormalSize(true, QSize(min,max));
+        else if(!portrait && !_normalLandscape)
+            InitNormalSize(false, QSize(max, min));
 
-        qDebug() << _normalLandscape << _normalPortrait;
-
-        setGeometry(portrait ? _normalPortrait : _normalLandscape);
+        setGeometry(QRect(*_normalPos, (portrait ? *_normalPortrait : *_normalLandscape)));
     }
     else
     {
         _resize->SetScale(portrait ? QSize(min,max) : QSize(max, min), (QWidget*)ui->client->GetScreen());
 
         ui->client->SetScale(portrait ? QSize(min,max) : QSize(max, min));
-        SetWithoutToolbarLayout(windowState());
+
+        if(Qt::WindowFullScreen == windowState())
+        {
+            SetWithoutToolbarLayout(windowState());
+            _toolbar->SetAutoFloat(this);
+        }
+        else
+            SetToolbarDockArea(portrait ? Qt::LeftDockWidgetArea : Qt::BottomDockWidgetArea);
     }
 
 }
@@ -158,13 +165,13 @@ void MainPanel::ReverseFullStatus()
 
 void MainPanel::resizeEvent(QResizeEvent *event)
 {
-
     RecodeNormalSize();
 }
 
 void MainPanel::moveEvent(QMoveEvent *event)
 {
-    RecodeNormalSize();
+    if(Qt::WindowNoState == windowState() && _normalPos)
+        *_normalPos = event->pos();
 }
 
 void MainPanel::changeEvent(QEvent *event)
@@ -310,17 +317,26 @@ void MainPanel::InitNormalSize(bool Portrait, QSize scale)
 
     QApplication::processEvents();
     QSize fix = size() - ui->client->size();
+
+    QSize temp = Portrait ? QSize(min, max) : QSize(min, max);
+    temp = CommonFunc::CenterRect(screen, temp.scaled(t, Qt::KeepAspectRatio)).size();
+    temp = fix + scale.scaled(temp,Qt::KeepAspectRatioByExpanding);
+    QRect rc = CommonFunc::CenterRect(screen,temp);
+    if(!_normalPos)
+        _normalPos = new QPoint();
+    *_normalPos = rc.topLeft();
+
     if(Portrait)
     {
-        QSize temp = CommonFunc::CenterRect(screen, QSize(min, max).scaled(t, Qt::KeepAspectRatio)).size();
-        temp = fix + scale.scaled(temp,Qt::KeepAspectRatioByExpanding);
-        _normalPortrait = CommonFunc::CenterRect(screen,temp);
+        if(!_normalPortrait)
+            _normalPortrait = new QSize();
+        *_normalPortrait = rc.size();
     }
     else
     {
-        QSize temp = CommonFunc::CenterRect(screen, QSize(max,min).scaled(t, Qt::KeepAspectRatio)).size();
-        temp = fix + scale.scaled(temp,Qt::KeepAspectRatioByExpanding);
-        _normalLandscape = CommonFunc::CenterRect(screen, temp);
+        if(!_normalLandscape)
+            _normalLandscape = new QSize();
+        *_normalLandscape = rc.size();
     }
 
 
@@ -353,13 +369,13 @@ void MainPanel::RecodeNormalSize()
     {
         if(CommonFunc::IsLandscape((QWidget*)ui->client->GetScreen()))
         {
-            if(CommonFunc::IsLandscape(size()))
-                _normalLandscape = geometry();
+            if(_normalLandscape && CommonFunc::IsLandscape(size()))
+                *_normalLandscape = size();
         }
         else
         {
-            if(!CommonFunc::IsLandscape(size()))
-                _normalPortrait = geometry();
+            if(_normalPortrait && !CommonFunc::IsLandscape(size()))
+                *_normalPortrait = size();
         }
     }
 }

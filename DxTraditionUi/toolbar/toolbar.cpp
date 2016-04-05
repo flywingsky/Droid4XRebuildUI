@@ -8,12 +8,18 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QSpacerItem>
+#include <QDebug>
+#include <QState>
+
+#include "qss.h"
+#include "floatanimation.h"
 
 ToolBar::ToolBar(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ToolBar),
     _hLayout(new CommonFunc::LayoutItems),
-    _vLayout(new CommonFunc::LayoutItems)
+    _vLayout(new CommonFunc::LayoutItems),
+    _float(new FloatAnimation())
 {
     ui->setupUi(this);
     CreateButtons();
@@ -26,7 +32,7 @@ ToolBar::~ToolBar()
 
 void ToolBar::SetLandscape()
 {
-    setMinimumSize(0,68);
+    setMinimumSize(0,0);
     setMaximumSize(QWIDGETSIZE_MAX,68);
 
     QGridLayout* l = (QGridLayout*)layout();
@@ -36,13 +42,30 @@ void ToolBar::SetLandscape()
 
 void ToolBar::SetPortrait()
 {
-    setMinimumSize(68,0);
+    setMinimumSize(0,0);
     setMaximumSize(68,QWIDGETSIZE_MAX);
 
 
     QGridLayout* l = (QGridLayout*)layout();
     CommonFunc::Relayout(*_vLayout,l);
 
+}
+
+void ToolBar::SetAutoFloat(QWidget* parent)
+{
+    // 只做放在左侧的
+    SetPortrait();
+    _float->SetMonitor(parent);
+    _float->SetTarget(this);
+    _float->Start();
+
+
+
+}
+
+void ToolBar::StopAutoFloat()
+{
+    _float->Stop();
 }
 
 
@@ -66,6 +89,7 @@ void ToolBar::paintEvent(QPaintEvent *event)
 
 void ToolBar::resizeEvent(QResizeEvent *event)
 {
+    qDebug() << geometry();
 }
 
 
@@ -102,6 +126,13 @@ void ToolBar::CreateButtons()
             connect(btn, SIGNAL(clicked()), this, SLOT(ButtonClicked()));
 
     }
+
+    _buttons["full"]->setObjectName("btnFull");
+    Qss q(_buttons["full"]);
+    q.AddSheet(Qss::QPushButton,true);
+    q.Sync();
+//    qDebug() << Qss::StyleSheet(Qss::QPushButton);
+//    _buttons["full"]->setStyleSheet(Qss::StyleSheet(Qss::QPushButton));
 
 
 

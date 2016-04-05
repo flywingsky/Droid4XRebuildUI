@@ -18,5 +18,19 @@
         <file alias="btn_more_normal.png">img/btn_more_normal.png</file>
         <file alias="btn_return_hover.png">img/btn_return_hover.png</file>
         <file alias="btn_return_normal.png">img/btn_return_normal.png</file>
+        <file>img/btn_about_normal.png</file>
+        <file alias="btn_full_hover.png">img/btn_full_hover.png</file>
+        <file alias="btn_full_normal.png">img/btn_full_normal.png</file>
+        <file>img/btn_help_normal.png</file>
+        <file>img/btn_line_normal.png</file>
+        <file>img/btn_NFull_disable.png</file>
+        <file>img/btn_NFull_hover.png</file>
+        <file>img/btn_NFull_normal.png</file>
+        <file>img/btn_set_normal.png</file>
+        <file>img/btn_shake_hover.png</file>
+        <file>img/btn_shake_normal.png</file>
+        <file>img/btn_shots_hover.png</file>
+        <file>img/btn_shots_normal.png</file>
+        <file>img/btn_vt_normal.png</file>
     </qresource>
 </RCC>

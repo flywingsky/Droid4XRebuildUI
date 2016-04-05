@@ -51,15 +51,6 @@ QSize FramelessResize::Scale() const
     return _scale;
 }
 
-void FramelessResize::Adjust()
-{
-    if(_elastic && !_elastic->size().isEmpty() && !_scale.isEmpty())
-    {
-        qDebug() << qAbs((qreal)_elastic->width() / _elastic->height() - (qreal)_scale.width() / _scale.height());
-        if( qAbs((qreal)_elastic->width() / _elastic->height() - (qreal)_scale.width() / _scale.height()) > 0.03 )
-            Adjust(QMargins(0,0,0,0));
-    }
-}
 
 bool FramelessResize::eventFilter(QObject *obj, QEvent *ev)
 {

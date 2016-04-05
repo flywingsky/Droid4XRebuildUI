@@ -13,6 +13,7 @@ class QPushButton;
 class QHBoxLayout;
 class QVBoxLayout;
 class QSpacerItem;
+class FloatAnimation;
 
 class ToolBar : public QWidget
 {
@@ -24,6 +25,10 @@ public:
 
     void SetLandscape();
     void SetPortrait();
+
+    // 设置自动的浮动，在给定的父窗口范围。
+    void SetAutoFloat(QWidget *parent);
+    void StopAutoFloat();
 
     QPushButton *GetButton(QString name);
 protected:
@@ -44,6 +49,7 @@ private:
     QMap<QString, QWidget*> _buttons;
     CommonFunc::LayoutItems* _hLayout;
     CommonFunc::LayoutItems* _vLayout;
+    FloatAnimation* _float;
 };
 
 #endif // TOOLBAR_H

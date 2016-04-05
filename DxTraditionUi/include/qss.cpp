@@ -1,19 +1,32 @@
 #include "qss.h"
 
 #include <QFile>
+#include <QTextStream>
 #include <QWidget>
+#include <QDebug>
 
-QFile* qssfiles[] = {
-    new QFile("://qss/QListWidget.qss"),
-    new QFile("://qss/QLineEdit.qss"),
-    new QFile(":/qss/qss/ScrollBar.qss"),
-    new QFile("://qpushbutton.qss"),
-    new QFile(":/qss/qss/QDialog.qss"),
-    new QFile(":/qss/QLabel.qss"),
-    new QFile(":/qss/QMenu.qss"),
-    new QFile("://title.qss")
+QString qssfiles[] = {
+    "://qss/QListWidget.qss",
+    "://qss/QLineEdit.qss",
+    ":/qss/qss/ScrollBar.qss",
+    "://qpushbutton.qss",
+    ":/qss/qss/QDialog.qss",
+    ":/qss/QLabel.qss",
+    ":/qss/QMenu.qss",
+    "://title.qss"
 
 };
+
+QString Qss::StyleSheet(int type)
+{
+    QFile f(qssfiles[type]);
+    f.open(QIODevice::ReadOnly|QIODevice::Text);
+
+    QString ss = f.readAll();
+
+    f.close();
+    return ss;
+}
 
 Qss::Qss(QObject *parent) :
     QObject(parent)
@@ -31,12 +44,4 @@ void Qss::AddSheet(int type, bool cover)
 void Qss::Sync()
 {
     _p->setStyleSheet(_sheet);
-}
-
-QString Qss::StyleSheet(int type) const
-{
-    qssfiles[type]->open(QIODevice::ReadOnly);
-    QString ss = qssfiles[type]->readAll();
-    qssfiles[type]->close();
-    return ss;
 }

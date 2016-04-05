@@ -37,7 +37,8 @@ SOURCES += \
     dllpro/dxuiprivate.cpp \
     focus/focuswidget.cpp \
     include/commonfunc.cpp \
-    screen/screenframe.cpp
+    screen/screenframe.cpp \
+    toolbar/floatanimation.cpp
 
 HEADERS +=\
         dllpro/dllpro_global.h \
@@ -58,7 +59,8 @@ HEADERS +=\
     msgcenter/msgdef.h \
     focus/focuswidget.h \
     include/commonfunc.h \
-    screen/screenframe.h
+    screen/screenframe.h \
+    toolbar/floatanimation.h
 
 unix {
     target.path = /usr/lib
